@@ -1,7 +1,3 @@
-export default function InvestStyleFilter(){
-    return(
-        <div>
-투자필터
-        </div>
-    );
+export default function InvestStyleFilter() {
+  return <div>투자필터</div>;
 }

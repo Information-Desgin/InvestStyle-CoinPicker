@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "./font-tokens.css";
+@import "./color-tokens.css";
+@import "./utilities.css";
+
+:root {
+  background-color: black;
+  color: white;
+}
