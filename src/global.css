@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 
 /* ---------------------------
    Global Base Styles
@@ -6,3 +8,5 @@
     background-color: black;
     color: white;
 }
+
+
