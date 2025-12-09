@@ -7,3 +7,93 @@
   background-color: black;
   color: white;
 }
+
+/* 캘린더 전체 박스 */
+.react-calendar {
+  width: 180px !important;
+  height: 120px !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 8px;
+  color: white;
+  position: relative !important;
+}
+
+/* 네비게이션 영역 (년/월 표시 라벨) */
+.react-calendar__navigation {
+  background: black;
+  margin-bottom: 0 !important;
+}
+
+/* 상단 년/월 텍스트 */
+.react-calendar__navigation__label {
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 날짜 */
+.react-calendar__month-view__weekdays {
+  font-size: 10px !important;
+  font-weight: 300 !important;
+}
+
+.react-calendar__month-view__weekdays abbr[title] {
+  text-decoration: none !important;
+}
+
+/* 주말 색 없애기 */
+/* 주말 기본 (이번달만 적용) */
+.react-calendar__month-view__days__day--weekend {
+  color: white !important;
+}
+
+/* 다음달/이전달 날짜는 회색으로 다시 덮기 */
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #555 !important;
+}
+
+/* 오늘 날짜 스타일 */
+.react-calendar__tile--now {
+  background: transparent !important;
+  color: white !important;
+
+  font-size: 8px !important;
+}
+
+.react-calendar__tile {
+  background: #333;
+  color: white;
+  border-radius: 8px;
+  padding: 1px 5px !important;
+  font-size: 10px !important;
+}
+
+/* 선택된 날짜 */
+.react-calendar__tile--active {
+  background: #3aa0ff !important;
+  color: white;
+  border-radius: 9999px !important;
+}
+
+/* hover */
+.react-calendar__tile:enabled:hover {
+  background: #ff7a00;
+  color: white;
+  border-radius: 8px;
+}
+
+.react-calendar__navigation button {
+  min-width: 10px !important;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: transparent !important;
+}
+
+/* 상단 Month Year 라벨 클릭 비활성화 */
+.react-calendar__navigation__label {
+  pointer-events: none !important; /* 클릭, hover 등 이벤트 막기 */
+  cursor: default !important; /* 마우스 올려도 손가락 커서 안 나오게 */
+}

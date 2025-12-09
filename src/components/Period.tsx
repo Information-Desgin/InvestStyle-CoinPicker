@@ -1,6 +1,6 @@
 export default function Period() {
   return (
-    <div className="flex flex-col items-center w-[190px] gap-[17px]">
+    <div className="flex flex-col items-center w-[190px] gap-[17px] pt-4">
       <div className="self-start">Period</div>
       <div className="flex justify-between w-full">
         <div>

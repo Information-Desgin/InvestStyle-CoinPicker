@@ -1,3 +1,4 @@
+import Calendar from "../Calender";
 import Period from "../Period";
 
 export default function Header() {
@@ -9,8 +10,9 @@ export default function Header() {
         <div>InvestStyle CoinPicker</div>
       </div>
       {/* 기간 */}
-      <div className="flex items-center justify-center">
+      <div className="flex items-start justify-center gap-[30px]">
         <Period />
+        <Calendar />
       </div>
     </header>
   );

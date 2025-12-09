@@ -1,3 +1,9 @@
 export default function InvestStyleFilter() {
-  return <div>투자필터</div>;
+  return;
+  <div className="">
+    <div>Aggressive</div>
+    <div>Stable</div>
+    <div>Cautious</div>
+    <div>Neutral</div>
+  </div>;
 }
