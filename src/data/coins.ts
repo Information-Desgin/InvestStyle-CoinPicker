@@ -1,0 +1,98 @@
+export const COINS = {
+  inj: {
+    name: "INJECTIVE",
+    symbol: "INJ",
+    chain: "INJECTIVE",
+    image: "/assets/injective.png",
+  },
+  atom: {
+    name: "COSMOS HUB",
+    symbol: "ATOM",
+    chain: "COSMOS",
+    image: "/assets/atom.png",
+  },
+  atone: {
+    name: "ATOMONE",
+    symbol: "ATONE",
+    chain: "ATOMONE",
+    image: "/assets/atone.png",
+  },
+  tia: {
+    name: "CELESTIA",
+    symbol: "TIA",
+    chain: "CELESTIA",
+    image: "/assets/tia.png",
+  },
+  akt: {
+    name: "AKASH",
+    symbol: "AKT",
+    chain: "AKASH",
+    image: "/assets/akt.png",
+  },
+  sei: {
+    name: "SEI",
+    symbol: "SEI",
+    chain: "SEI",
+    image: "/assets/sei.png",
+  },
+  axl: {
+    name: "AXELAR",
+    symbol: "AXL",
+    chain: "AXELAR",
+    image: "/assets/axl.png",
+  },
+  kava: {
+    name: "KAVA",
+    symbol: "KAVA",
+    chain: "KAVA",
+    image: "/assets/kava.png",
+  },
+  althea: {
+    name: "ALTHER",
+    symbol: "ALTHEA",
+    chain: "ALTHER",
+    image: "/assets/althea.png",
+  },
+  saga: {
+    name: "SAGA",
+    symbol: "SAGA",
+    chain: "SAGA",
+    image: "/assets/saga.png",
+  },
+  om: {
+    name: "MANTRA",
+    symbol: "OM",
+    chain: "MANTRA",
+    image: "/assets/om.png",
+  },
+  osmo: {
+    name: "OSMOSIS",
+    symbol: "OSMO",
+    chain: "OSMOSIS",
+    image: "/assets/osmo.png",
+  },
+  coreum: {
+    name: "COREUM",
+    symbol: "COREUM",
+    chain: "COREUM",
+    image: "/assets/coreum.png",
+  },
+  luna: {
+    name: "TERRA",
+    symbol: "LUNA",
+    chain: "TERRA",
+    image: "/assets/luna.png",
+  },
+  strd: {
+    name: "STRIDE",
+    symbol: "STRD",
+    chain: "STRIDE",
+    image: "/assets/strd.png",
+  },
+  ntrn: {
+    name: "NEUTRON",
+    symbol: "NTRN",
+    chain: "NEUTRON",
+    image: "/assets/ntrn.png",
+  },
+};

@@ -1,27 +1,91 @@
-import type { ChainCoin } from "../../types/chainCoinList";
+import clsx from "clsx";
 
-interface ChainCoinProps {
-    ChainCoin: ChainCoin
+type ChainCoinProps = {
+  name: string;
+  coin: string;
+  color: string; // 왼쪽 바 색
+  coinImg: string; // 코인 이미지
+  isSelected: boolean;
+  onClick?: () => void;
+  stats?: {
+    endo: number;
+    exter: number;
+    netflow: number;
+  };
+};
+
+export default function ChainCoin({
+  name,
+  coin,
+  color,
+  coinImg,
+  isSelected,
+  onClick,
+  stats,
+}: ChainCoinProps) {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        "w-full flex items-center justify-between rounded-[6px] transition-all px-[10px] py-[10px] cursor-pointer",
+        isSelected && "bg-[#3b444d]"
+      )}
+    >
+      {/* LEFT */}
+      <div className="flex items-center gap-[12px] flex-1 min-w-0">
+        {/* 왼쪽 컬러바 */}
+        {isSelected && (
+          <div
+            className="w-[6px] h-[38px] rounded-[3px]"
+            style={{ backgroundColor: color }}
+          />
+        )}
+
+        {/* 코인 이미지 */}
+        <div
+          className={clsx(
+            "w-[26px] h-[26px] rounded-full overflow-hidden border-[2px] flex-shrink-0",
+            "border-white"
+          )}
+        >
+          <img
+            src={coinImg}
+            alt={name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* 텍스트 */}
+        <div className="flex flex-col overflow-hidden">
+          <span className="text-[15px] text-white truncate">{name}</span>
+          <span
+            className={clsx(
+              "text-[13px] mt-[1px]",
+              isSelected ? "text-gray-300" : "text-gray-400"
+            )}
+          >
+            {coin}
+          </span>
+        </div>
+      </div>
+
+      {/* RIGHT */}
+      {isSelected && stats && (
+        <div className="flex flex-col gap-[5px] w-[60px] ml-[6px]">
+          <Bar color="#7ce0c9" width={stats.endo} />
+          <Bar color="#ffc85c" width={stats.exter} />
+          <Bar color="#ff717e" width={stats.netflow} />
+        </div>
+      )}
+    </button>
+  );
 }
 
-export default function ChainCoin({ChainCoin}: ChainCoinProps){
-return(
-    <>
-    <div className="flex gap-9">
-        {/* <Image src={ChainCoin.imgSrc} alt={ChainCoin.coin}/> */}
-        <div className="flex flex-col gap-3">
-            <div>{ChainCoin.chain}</div>
-            <div>{ChainCoin.coin}</div>        
-        </div>
-        <div className="flex flex-col gap-6">
-            {/* 외부안정성 Bar Chart */}
-            <div></div>
-            {/* 내부안정성 Bar Chart */}
-            <div></div>
-            {/* NetFlow Bar Chart */}
-            <div></div>
-        </div>
-    </div>
-    </>
-);
+function Bar({ color, width }: { color: string; width: number }) {
+  return (
+    <div
+      className="h-[6px] rounded-full"
+      style={{ backgroundColor: color, width: `${width}%` }}
+    />
+  );
 }
