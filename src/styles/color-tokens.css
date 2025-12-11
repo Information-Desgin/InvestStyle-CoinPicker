@@ -1,6 +1,37 @@
 @theme {
+  --color-point: #3aa0ff;
   --color-border: #1c1c1e;
-  --color-point300: #3aa0ff;
-  --color-point200: #b0d9ff;
-  --color-point100: #e6f7ff;
+  --color-box-default: #35414d80;
+  --color-box-clicked: #35414d;
+
+  /* ==== 그래프 축 색상 ==== */
+  --color-graph-axis: #b9cadc;
+
+  /* ==== 바 세부 수치 색상 ==== */
+  --color-internal: #00fff6;
+  --color-external: #ffee00;
+  --color-netflow: #ff00b2;
+
+  /* ==== 텍스트 색상 ==== */
+  --color-main-text: #ffffff;
+  --color-point-text: #b0d9ff;
+  --color-sub-text: #b3b3b3;
+
+  /* ==== 코인 색상 ==== */
+  --color-inj: #006311;
+  --color-atom: #06c146;
+  --color-atone: #23e9c6;
+  --color-tia: #0cfdf1;
+  --color-akt: #68d8fd;
+  --color-sei: #029cce;
+  --color-axl: #0051ff;
+  --color-kava: #3b24f9;
+  --color-althea: #511e67;
+  --color-saga: #831ced;
+  --color-om: #8c6afd;
+  --color-osmo: #c90204;
+  --color-coreum: #f5297b;
+  --color-luna: #fb00ff;
+  --color-strd: #fefc00;
+  --color-ntrn: #ffc741;
 }

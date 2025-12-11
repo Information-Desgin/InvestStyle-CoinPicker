@@ -13,9 +13,9 @@ export default function InvestStyleSelector({
 }) {
   return (
     <div className="relative w-[180px] h-[100px] text-white">
-      {/* --- 중앙 십자선(기본 그리드) --- */}
-      <div className="absolute top-1/2 left-0 w-full h-[2px] bg-point300"></div>
-      <div className="absolute top-0 left-1/2 h-full w-[2px] bg-point300"></div>
+      {/* 십자 구분선 */}
+      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-point"></div>
+      <div className="absolute top-0 left-1/2 h-full w-[1px] bg-point"></div>
 
       {/* 그리드 */}
       <div className="grid grid-cols-2 grid-rows-2 w-full h-full">
@@ -61,19 +61,30 @@ function Quadrant({
 }) {
   const radius =
     position === "top-left"
-      ? "rounded-tl-[14px]"
+      ? "rounded-tl-[3px]"
       : position === "top-right"
-      ? "rounded-tr-[14px]"
+      ? "rounded-tr-[3px]"
       : position === "bottom-left"
-      ? "rounded-bl-[14px]"
-      : "rounded-br-[14px]";
+      ? "rounded-bl-[3px]"
+      : "rounded-br-[3px]";
 
-  const borderClass = active ? "border-2 border-point300 bg-[#3A4455]" : "";
+  // 액티브일 때 border 방향 지정
+  const activeBorders = active
+    ? position === "top-left"
+      ? "border-t border-l border-point"
+      : position === "top-right"
+      ? "border-t border-r border-point"
+      : position === "bottom-left"
+      ? "border-b border-l border-point"
+      : "border-b border-r border-point"
+    : "";
+
+  const activeBg = active ? "bg-box-clicked" : "";
 
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center ${radius} ${borderClass} text-[12px] cursor-pointer`}
+      className={`flex items-center justify-center ${radius} ${activeBorders} ${activeBg} text-[12px] cursor-pointer`}
     >
       {label}
     </button>

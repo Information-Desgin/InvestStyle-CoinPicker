@@ -1,67 +1,52 @@
 import { useState } from "react";
 import type { InvestStyle } from "../../types/chainCoinList";
 import ChainCoin from "./ChainCoin";
+import { COINS } from "../../data/coins";
 
 interface ChainCoinListProps {
   sort: InvestStyle;
+  metrics: {
+    [symbol: string]: {
+      endo: number;
+      exter: number;
+      netflow: number;
+    };
+  };
 }
 
-const MOCK_DATA = [
-  {
-    id: 1,
-    name: "COSMOS HUB",
-    coin: "ATOM",
-    color: "#6EC1FF",
-    coinImg: "/images/atom.png",
-    stats: { endo: 80, exter: 60, netflow: 40 },
-  },
-  {
-    id: 2,
-    name: "Osmosis",
-    coin: "OSMO",
-    color: "#8250FF",
-    coinImg: "/images/osmo.png",
-    stats: { endo: 75, exter: 50, netflow: 45 },
-  },
-  {
-    id: 3,
-    name: "Juno",
-    coin: "JUNO",
-    color: "#FF5C8A",
-    coinImg: "/images/juno.png",
-    stats: { endo: 60, exter: 55, netflow: 30 },
-  },
-  {
-    id: 4,
-    name: "Stargaze",
-    coin: "STARS",
-    color: "#9B51E0",
-    coinImg: "/images/stars.png",
-    stats: { endo: 50, exter: 40, netflow: 25 },
-  },
-];
+export default function ChainCoinList({
+  sort,
+  metrics = {},
+}: ChainCoinListProps) {
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-export default function ChainCoinList({ sort }: ChainCoinListProps) {
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
-
-  const toggleSelect = (id: number) => {
-    setSelectedIds(
-      (prev) =>
-        prev.includes(id)
-          ? prev.filter((x) => x !== id) // 선택 해제
-          : [...prev, id] // 추가 선택
+  const toggleSelect = (symbol: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(symbol)
+        ? prev.filter((s) => s !== symbol)
+        : [...prev, symbol]
     );
   };
 
-  // sort값 따라 나중에 정렬 or 필터 적용 가능
-  const sortedList = MOCK_DATA; // sort 반영은 이후에 추가 가능
+  // COINS 객체를 배열로 변환
+  const coinList = Object.entries(COINS).map(([key, coin]) => ({
+    id: key,
+    name: coin.name,
+    coin: coin.symbol,
+    color: coin.color,
+    chain: coin.chain,
+    coinImg: coin.image,
+    stats: metrics[key] ?? { endo: 0, exter: 0, netflow: 0 },
+  }));
+
+  const sortedList = coinList;
 
   return (
-    <div className="flex flex-col gap-[8px] mt-[15px] w-full">
+    <div className="flex flex-col gap-[14px] w-full">
       {sortedList.map((item) => (
         <ChainCoin
           key={item.id}
-          name={item.name}
+          name={item.chain}
           coin={item.coin}
           color={item.color}
           coinImg={item.coinImg}

@@ -6,7 +6,7 @@ export default function Header() {
     <header className="grid-rows-[180px] grid grid-cols-[810px_470px] section-border-b w-full">
       {/* 제목 */}
       <div className="section-border-r flex items-center">
-        <div className="w-[10px] h-[66px] mx-[30px] bg-point300" />
+        <div className="w-[10px] h-[66px] mx-[30px] bg-point" />
         <div>InvestStyle CoinPicker</div>
       </div>
       {/* 기간 */}

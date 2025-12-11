@@ -5,15 +5,15 @@ export default function Period() {
       <div className="flex justify-between w-full">
         <div>
           <div>Start date</div>
-          <input className="border border-point300 w-[80px] h-[25px] rounded-[3px]" />
+          <input className="border border-point w-[80px] h-[25px] rounded-[3px]" />
         </div>
         <div className="pt-6">-</div>
         <div>
           <div>End date</div>
-          <input className="border border-point300 w-[80px] h-[25px] rounded-[3px]" />
+          <input className="border border-point w-[80px] h-[25px] rounded-[3px]" />
         </div>
       </div>
-      <button className="flex-1 bg-point300 color-white h-[18px] self-stretch rounded-[3px]">
+      <button className="flex-1 bg-point color-white h-[18px] self-stretch rounded-[3px]">
         Apply
       </button>
     </div>

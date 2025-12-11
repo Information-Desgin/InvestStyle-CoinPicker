@@ -27,8 +27,8 @@ export default function ChainCoin({
     <button
       onClick={onClick}
       className={clsx(
-        "w-full flex items-center justify-between rounded-[6px] transition-all px-[10px] py-[10px] cursor-pointer",
-        isSelected && "bg-[#3b444d]"
+        "w-full flex items-center justify-between transition-all cursor-pointer pl-[22px] py-[6px] relative",
+        isSelected && "bg-box-clicked"
       )}
     >
       {/* LEFT */}
@@ -36,16 +36,17 @@ export default function ChainCoin({
         {/* 왼쪽 컬러바 */}
         {isSelected && (
           <div
-            className="w-[6px] h-[38px] rounded-[3px]"
+            className="absolute h-full w-[5px] left-0 top-0"
             style={{ backgroundColor: color }}
+            className="absolute h-full w-[5px] left-0 top-0 bg-point"
+            // style={{ backgroundColor: color }}
           />
         )}
 
         {/* 코인 이미지 */}
         <div
           className={clsx(
-            "w-[26px] h-[26px] rounded-full overflow-hidden border-[2px] flex-shrink-0",
-            "border-white"
+            "w-[26px] h-[26px] rounded-full overflow-hidden flex-shrink-0"
           )}
         >
           <img
@@ -60,7 +61,7 @@ export default function ChainCoin({
           <span className="text-[15px] text-white truncate">{name}</span>
           <span
             className={clsx(
-              "text-[13px] mt-[1px]",
+              "text-[13px] mt-[1px] self-start",
               isSelected ? "text-gray-300" : "text-gray-400"
             )}
           >
