@@ -3,6 +3,7 @@ import Header from "../components/header/Header";
 import ChordDiagram from "../components/graph/ChordDiagram";
 import QuadrantBubbleChart from "../components/graph/BubbleChart";
 import ExternalStability from "../components/graph/ExternalStability";
+import InternalStability from "../components/graph/InternalStability";
 
 export default function Home() {
   return (
@@ -23,7 +24,9 @@ export default function Home() {
             <ExternalStability />
           </div>
           <div className="grid grid-cols-[670px_600px] h-[400px]">
-            <div className="section-border-r">Internal Stability</div>
+            <div className="section-border-r">
+              <InternalStability />
+            </div>
             <div>Fund Inflow and Outflow</div>
           </div>
         </main>
