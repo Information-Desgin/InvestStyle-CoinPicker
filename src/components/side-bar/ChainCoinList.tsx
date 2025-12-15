@@ -1,34 +1,10 @@
-import { useState } from "react";
-import type { InvestStyle } from "../../types/chainCoinList";
-import ChainCoin from "./ChainCoin";
+import { useSelectedCoins } from "../../store/useSelectedCoins";
 import { COINS } from "../../data/coins";
+import ChainCoin from "./ChainCoin";
 
-interface ChainCoinListProps {
-  sort: InvestStyle;
-  metrics: {
-    [symbol: string]: {
-      endo: number;
-      exter: number;
-      netflow: number;
-    };
-  };
-}
+export default function ChainCoinList({ metrics = {} }) {
+  const { selectedIds, toggle } = useSelectedCoins();
 
-export default function ChainCoinList({
-  sort,
-  metrics = {},
-}: ChainCoinListProps) {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const toggleSelect = (symbol: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(symbol)
-        ? prev.filter((s) => s !== symbol)
-        : [...prev, symbol]
-    );
-  };
-
-  // COINS 객체를 배열로 변환
   const coinList = Object.entries(COINS).map(([key, coin]) => ({
     id: key,
     name: coin.name,
@@ -39,11 +15,9 @@ export default function ChainCoinList({
     stats: metrics[key] ?? { endo: 0, exter: 0, netflow: 0 },
   }));
 
-  const sortedList = coinList;
-
   return (
     <div className="flex flex-col gap-[14px] w-full">
-      {sortedList.map((item) => (
+      {coinList.map((item) => (
         <ChainCoin
           key={item.id}
           name={item.chain}
@@ -51,7 +25,7 @@ export default function ChainCoinList({
           color={item.color}
           coinImg={item.coinImg}
           isSelected={selectedIds.includes(item.id)}
-          onClick={() => toggleSelect(item.id)}
+          onClick={() => toggle(item.id)}
           stats={item.stats}
         />
       ))}

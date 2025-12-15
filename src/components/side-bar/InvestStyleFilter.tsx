@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 type InvestStyle = "aggressive" | "stable" | "cautious" | "neutral";
 
 export default function InvestStyleSelector({
