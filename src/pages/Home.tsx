@@ -4,6 +4,7 @@ import ChordDiagram from "../components/graph/ChordDiagram";
 import QuadrantBubbleChart from "../components/graph/BubbleChart";
 import ExternalStability from "../components/graph/ExternalStability";
 import InternalStability from "../components/graph/InternalStability";
+import NetFlow from "../components/graph/Netflow";
 
 export default function Home() {
   return (
@@ -27,7 +28,9 @@ export default function Home() {
             <div className="section-border-r">
               <InternalStability />
             </div>
-            <div>Fund Inflow and Outflow</div>
+            <div>
+              <NetFlow />
+            </div>
           </div>
         </main>
       </div>

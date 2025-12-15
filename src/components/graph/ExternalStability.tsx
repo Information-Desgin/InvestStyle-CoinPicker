@@ -1,5 +1,3 @@
-"use client";
-
 import { ResponsiveLine } from "@nivo/line";
 import { useMemo } from "react";
 import { timeFormat } from "d3-time-format";

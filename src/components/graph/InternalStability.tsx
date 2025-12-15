@@ -1,5 +1,3 @@
-"use client";
-
 import { ResponsiveBar } from "@nivo/bar";
 import { useMemo } from "react";
 import { useSelectedCoins } from "../../store/useSelectedCoins";
@@ -34,7 +32,7 @@ export default function InternalStability() {
   if (data.length === 0) {
     return (
       <div className="flex h-[360px] items-center justify-center text-sm text-neutral-400">
-        코인을 선택하면 Internal Stability 구성이 표시됩니다
+        코인을 선택하면 Internal Stability 구성이 표시됩니다.
       </div>
     );
   }
