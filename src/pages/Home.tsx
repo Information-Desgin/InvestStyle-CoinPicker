@@ -13,7 +13,7 @@ export default function Home() {
       <SideBar />
       <div className="flex flex-col flex-1">
         <Header />
-        <main className="overflow-y-auto">
+        <main className="overflow-y-auto scrollbar-custom">
           <div className="grid grid-cols-[560px_710px] h-[560px] section-border-b">
             <div className="section-border-r flex justify-center items-center">
               <AnalyticsSection

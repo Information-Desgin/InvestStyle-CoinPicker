@@ -8,7 +8,7 @@ export default function SideBar() {
   const [style, setStyle] = useState<InvestStyle>("stable");
 
   return (
-    <aside className="w-[230px] section-border-r overflow-y-auto h-full flex flex-col pt-[30px]">
+    <aside className="min-w-[230px] section-border-r overflow-y-auto h-full flex flex-col pt-[30px] scrollbar-custom">
       <div className="px-[27px]">
         {/* FILTER 타이틀 */}
         <div className="text-[20px] font-medium mb-[25px]">Filter</div>

@@ -9,7 +9,6 @@ export default function ChainCoinList({ metrics = {} }) {
     id: key,
     name: coin.name,
     coin: coin.symbol,
-    color: coin.color,
     chain: coin.chain,
     coinImg: coin.image,
     stats: metrics[key] ?? { endo: 0, exter: 0, netflow: 0 },
@@ -22,7 +21,6 @@ export default function ChainCoinList({ metrics = {} }) {
           key={item.id}
           name={item.chain}
           coin={item.coin}
-          color={item.color}
           coinImg={item.coinImg}
           isSelected={selectedIds.includes(item.id)}
           onClick={() => toggle(item.id)}

@@ -10,7 +10,7 @@ export default function InvestStyleSelector({
   onChange: (v: InvestStyle) => void;
 }) {
   return (
-    <div className="relative w-[180px] h-[100px] text-white">
+    <div className="relative w-full h-[100px] text-white">
       {/* 십자 구분선 */}
       <div className="absolute top-1/2 left-0 w-full h-[1px] bg-point"></div>
       <div className="absolute top-0 left-1/2 h-full w-[1px] bg-point"></div>

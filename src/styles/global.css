@@ -8,6 +8,12 @@
   color: white;
 }
 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 /* 캘린더 전체 박스 */
 .react-calendar {
   width: 180px !important;
@@ -96,4 +102,27 @@
 .react-calendar__navigation__label {
   pointer-events: none !important; /* 클릭, hover 등 이벤트 막기 */
   cursor: default !important; /* 마우스 올려도 손가락 커서 안 나오게 */
+}
+
+/* 스크롤바 */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
