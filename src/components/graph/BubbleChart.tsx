@@ -30,7 +30,7 @@ export default function BubbleChartD3() {
     d3.select(ref.current).selectAll("*").remove();
 
     const width = 700;
-    const height = 500;
+    const height = 470;
 
     const svg = d3
       .select(ref.current)

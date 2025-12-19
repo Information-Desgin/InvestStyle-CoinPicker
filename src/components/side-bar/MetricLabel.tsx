@@ -15,7 +15,7 @@ export default function MetricLabel({ color, text }: MetricLabelProps) {
       <div
         className={`w-[10px] h-[10px] rounded-full ${COLOR_CLASS_MAP[color]}`}
       />
-      <span className="text-[8px] text-white/80 break-words">{text}</span>
+      <span className="font-body3-light">{text}</span>
     </div>
   );
 }

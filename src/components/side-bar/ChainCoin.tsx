@@ -54,11 +54,10 @@ export default function ChainCoin({
 
         {/* 텍스트 */}
         <div className="flex flex-col overflow-hidden">
-          <span className="text-[15px] text-white truncate">{name}</span>
+          <span className="font-chainname-bold truncate">{name}</span>
           <span
             className={clsx(
-              "text-[13px] mt-[1px] self-start",
-              isSelected ? "text-gray-300" : "text-gray-400"
+              "font-body1-light mt-[1px] self-start text-sub-text"
             )}
           >
             {coin}

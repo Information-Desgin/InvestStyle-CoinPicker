@@ -1,0 +1,89 @@
+@utility font-title {
+  font-family: var(--font-main);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+@utility font-subtitle {
+  font-family: var(--font-main);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-medium);
+}
+
+@utility font-element-bold {
+  font-family: var(--font-main);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-regular);
+}
+
+@utility font-element-light {
+  font-family: var(--font-main);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-light);
+}
+
+@utility font-toggle-bold {
+  font-family: var(--font-main);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-regular);
+}
+
+@utility font-toggle-light {
+  font-family: var(--font-main);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-light);
+}
+
+@utility font-chainname-bold {
+  font-family: var(--font-sub);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+@utility font-chainname-light {
+  font-family: var(--font-sub);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-light);
+}
+
+@utility font-body1-bold {
+  font-family: var(--font-sub);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+@utility font-body1-light {
+  font-family: var(--font-sub);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-light);
+}
+
+@utility font-body2-bold {
+  font-family: var(--font-sub);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+@utility font-body2-light {
+  font-family: var(--font-sub);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-light);
+}
+
+@utility font-body3-bold {
+  font-family: var(--font-sub);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+@utility font-body3-light {
+  font-family: var(--font-sub);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-light);
+}
+
+@utility font-body4 {
+  font-family: var(--font-sub);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-light);
+}

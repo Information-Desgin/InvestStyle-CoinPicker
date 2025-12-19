@@ -49,8 +49,8 @@ export default function ChordDiagramD3() {
     const container = d3.select(ref.current);
     container.selectAll("*").remove();
 
-    const width = 450;
-    const height = 450;
+    const width = 430;
+    const height = 430;
     const outerRadius = Math.min(width, height) * 0.46;
     const innerRadius = outerRadius - 10;
 

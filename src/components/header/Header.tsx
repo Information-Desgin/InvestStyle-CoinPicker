@@ -7,7 +7,7 @@ export default function Header() {
       {/* 제목 */}
       <div className="section-border-r flex items-center">
         <div className="w-[10px] h-[66px] mx-[30px] bg-point" />
-        <div>InvestStyle CoinPicker</div>
+        <div className="font-title">InvestStyle CoinPicker</div>
       </div>
       {/* 기간 */}
       <div className="flex items-start justify-center gap-[30px]">

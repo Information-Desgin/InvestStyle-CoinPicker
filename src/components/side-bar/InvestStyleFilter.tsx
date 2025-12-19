@@ -82,7 +82,7 @@ function Quadrant({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center ${radius} ${activeBorders} ${activeBg} text-[12px] cursor-pointer`}
+      className={`flex items-center justify-center ${radius} ${activeBorders} ${activeBg} font-element-light cursor-pointer`}
     >
       {label}
     </button>

@@ -14,19 +14,21 @@ export function AnalyticsSection({
   children,
 }: AnalyticsSectionProps) {
   return (
-    <section className="w-full h-full">
+    <section className="w-full h-full p-7 flex flex-col">
       <header className="flex items-start">
-        <div>
-          <div className="">
-            <span>{subtitle} </span>
+        <div className="flex flex-col gap-[14px]">
+          <div className="font-subtitle">
+            <span className="text-point-text">{subtitle} </span>
             {title}
           </div>
-          {description && <p className="break-all">{description}</p>}
+          {description && (
+            <div className="break-all font-element-light">{description}</div>
+          )}
         </div>
         {togglebtns}
       </header>
 
-      {children}
+      <div className="flex-1 w-full flex justify-center">{children}</div>
     </section>
   );
 }

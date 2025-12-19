@@ -1,15 +1,15 @@
 @utility section-border-r {
-  border-right: 5px solid #1c1c1e;
+  border-right: 5px solid var(--color-border);
 }
 
 @utility section-border-t {
-  border-top: 5px solid #1c1c1e;
+  border-top: 5px solid var(--color-border);
 }
 
 @utility section-border-b {
-  border-bottom: 5px solid #1c1c1e;
+  border-bottom: 5px solid var(--color-border);
 }
 
 @utility section-border-l {
-  border-left: 5px solid #1c1c1e;
+  border-left: 5px solid var(--color-border);
 }

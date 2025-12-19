@@ -10,8 +10,7 @@ export default function SideBar() {
   return (
     <aside className="min-w-[230px] section-border-r overflow-y-auto h-full flex flex-col pt-[30px] scrollbar-custom">
       <div className="px-[27px]">
-        {/* FILTER 타이틀 */}
-        <div className="text-[20px] font-medium mb-[25px]">Filter</div>
+        <div className="font-subtitle mb-[25px]">Filter</div>
 
         {/* 투자 성향 필터 */}
         <InvestStyleSelector value={style} onChange={setStyle} />
@@ -20,12 +19,10 @@ export default function SideBar() {
       <div className="flex gap-[25px] mt-[37px] justify-center">
         {/* 선택된 투자 성향 표시 영역 */}
         <div className="mt-[10px]">
-          <div className="text-[12px] font-medium text-point border-b border-point pb-[4px] capitalize">
+          <div className="font-element-bold text-point border-b border-point pb-[4px] capitalize">
             {style}
           </div>
-          <div className="mt-[8px] text-[10px] text-white/70">
-            Chain–Coin List
-          </div>
+          <div className="font-element-light mt-[8px]">Chain–Coin List</div>
         </div>
 
         {/* 지표 라벨  */}
