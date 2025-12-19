@@ -5,6 +5,7 @@ import QuadrantBubbleChart from "../components/graph/BubbleChart";
 import ExternalStability from "../components/graph/ExternalStability";
 import InternalStability from "../components/graph/InternalStability";
 import NetFlow from "../components/graph/Netflow";
+import { AnalyticsSection } from "../components/AnalyticsSection";
 
 export default function Home() {
   return (
@@ -15,21 +16,48 @@ export default function Home() {
         <main className="overflow-y-auto">
           <div className="grid grid-cols-[560px_710px] h-[560px] section-border-b">
             <div className="section-border-r flex justify-center items-center">
-              <ChordDiagram />
+              <AnalyticsSection
+                title="Capital Flow"
+                subtitle="[Overview]"
+                description="descripntiondescriptiondescriptiondescriptiondescriptiondescriptiondescription"
+              >
+                <ChordDiagram />
+              </AnalyticsSection>
             </div>
             <div>
-              <QuadrantBubbleChart />
+              <AnalyticsSection
+                title="Investment Type Classification"
+                subtitle="[Comparison]"
+                description="descripntiondescriptiondescriptiondescriptiondescriptiondescriptiondescription"
+              >
+                <QuadrantBubbleChart />
+              </AnalyticsSection>
             </div>
           </div>
           <div className="section-border-b h-[440px]">
-            <ExternalStability />
+            <AnalyticsSection
+              title="External Stability"
+              description="descripntiondescriptiondescriptiondescriptiondescriptiondescriptiondescription"
+            >
+              <ExternalStability />
+            </AnalyticsSection>
           </div>
           <div className="grid grid-cols-[670px_600px] h-[400px]">
             <div className="section-border-r">
-              <InternalStability />
+              <AnalyticsSection
+                title="Internal Stability"
+                description="descripntiondescriptiondescriptiondescriptiondescriptiondescriptiondescription"
+              >
+                <InternalStability />
+              </AnalyticsSection>
             </div>
             <div>
-              <NetFlow />
+              <AnalyticsSection
+                title="Capital Inflow and Outflow"
+                description="descripntiondescriptiondescriptiondescriptiondescriptiondescriptiondescription"
+              >
+                <NetFlow />
+              </AnalyticsSection>
             </div>
           </div>
         </main>
