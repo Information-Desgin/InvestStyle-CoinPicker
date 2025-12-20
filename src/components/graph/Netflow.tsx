@@ -17,14 +17,14 @@ export default function NetFlow() {
 
   if (data.length === 0) {
     return (
-      <div className="flex h-[380px] items-center justify-center text-sm text-neutral-400">
+      <div className="flex h-[300px] items-center justify-center text-sm text-neutral-400">
         코인을 선택하면 자금 유입/유출 분포가 표시됩니다.
       </div>
     );
   }
 
   return (
-    <div className="w-full h-[380px]">
+    <div className="w-full h-[300px]">
       <ResponsiveBoxPlot
         // layout="horizontal"
         data={data}
