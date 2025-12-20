@@ -5,7 +5,7 @@ export default function Period() {
   const { startDate, endDate } = useDateRange();
 
   return (
-    <div className="flex flex-col items-center w-[190px] gap-[40px] pt-4">
+    <div className="flex flex-col items-center w-[190px] gap-[30px] pt-[30px]">
       <div className="self-start font-subtitle">Period</div>
 
       <div className="flex justify-between w-full">

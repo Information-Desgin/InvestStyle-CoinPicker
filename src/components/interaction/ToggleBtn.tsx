@@ -40,7 +40,7 @@ export default function ToggleBtn<T extends string>(props: ToggleBtnProps<T>) {
   return (
     <div
       className={clsx(
-        "flex h-[25px] rounded-[4px] border border-[#3a4652] bg-box-default absolute top-4 right-4 z-10",
+        "flex h-[25px] rounded-[4px] border border-[#3a4652] bg-box-default absolute top-7 right-7 z-10",
         className
       )}
     >

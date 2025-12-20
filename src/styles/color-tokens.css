@@ -18,20 +18,20 @@
   --color-sub-text: #b3b3b3;
 
   /* ==== 코인 색상 ==== */
-  --color-inj: #006311;
-  --color-atom: #06c146;
-  --color-atone: #23e9c6;
-  --color-tia: #0cfdf1;
-  --color-akt: #68d8fd;
-  --color-sei: #029cce;
+  --color-inj: #617cff;
+  --color-atom: #4a62a0;
+  --color-atone: #03c5f6;
+  --color-tia: #d179ff;
+  --color-akt: #c90205;
+  --color-sei: #ff93b0;
   --color-axl: #0051ff;
-  --color-kava: #3b24f9;
-  --color-althea: #511e67;
-  --color-saga: #831ced;
-  --color-om: #8c6afd;
-  --color-osmo: #c90204;
-  --color-coreum: #f5297b;
-  --color-luna: #fb00ff;
-  --color-strd: #fefc00;
-  --color-ntrn: #ffc741;
+  --color-kava: #ff1d21;
+  --color-althea: #84cbff;
+  --color-saga: #ff615f;
+  --color-om: #ffbec2;
+  --color-osmo: #831ced;
+  --color-coreum: #4cd6a4;
+  --color-luna: #8cf5e7;
+  --color-strd: #ff73cf;
+  --color-ntrn: #ff8800;
 }

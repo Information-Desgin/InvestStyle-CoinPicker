@@ -18,7 +18,10 @@
 
   /* 상단 년/월 텍스트 */
   .react-calendar__navigation__label {
-    @apply font-body1-bold;
+    /* @apply font-body1-bold; */
+    font-family: var(--font-sub) !important;
+    font-size: var(--text-md) !important;
+    font-weight: var(--font-weight-light) !important;
   }
 
   /* 날짜 */

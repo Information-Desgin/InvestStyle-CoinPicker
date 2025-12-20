@@ -86,7 +86,10 @@ export default function InternalStability() {
 
           return (
             <TooltipContainer title={coin}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+              <div
+                style={{ display: "flex", flexDirection: "column" }}
+                className="gap-[10px]"
+              >
                 {KEYS.map((key) => {
                   const isActive = key === activeKey;
 

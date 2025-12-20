@@ -16,7 +16,7 @@ export default function SideBar() {
         <InvestStyleSelector value={style} onChange={setStyle} />
       </div>
 
-      <div className="flex gap-[25px] mt-[37px] justify-center">
+      <div className="flex gap-[15px] mt-[37px] justify-center">
         {/* 선택된 투자 성향 표시 영역 */}
         <div className="mt-[10px]">
           <div className="font-element-bold text-point border-b border-point pb-[4px] capitalize">
@@ -26,7 +26,7 @@ export default function SideBar() {
         </div>
 
         {/* 지표 라벨  */}
-        <div className="flex flex-col gap-[6px] mt-[10px]">
+        <div className="flex flex-col gap-[6px]">
           <div className="flex flex-col gap-[6px] mt-[10px]">
             <MetricLabel color="internal" text="Internal Stability" />
             <MetricLabel color="external" text="External Stability" />

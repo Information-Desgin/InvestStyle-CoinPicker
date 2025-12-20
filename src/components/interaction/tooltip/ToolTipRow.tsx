@@ -23,7 +23,7 @@ export function TooltipRow({
         borderRadius: 8,
         background: isActive ? "rgba(96,165,250,0.12)" : "transparent",
       }}
-      className="font-body1-bold"
+      className="font-body1-light"
     >
       {/* 점 */}
       <span
@@ -48,7 +48,6 @@ export function TooltipRow({
       <span
         style={{
           marginLeft: "auto",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
         }}
       >
         {value}

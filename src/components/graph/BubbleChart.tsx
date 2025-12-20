@@ -4,7 +4,7 @@ import { COINS } from "../../data/coins";
 import { useSelectedCoins } from "../../store/useSelectedCoins";
 
 export default function BubbleChartD3() {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const { selectedIds } = useSelectedCoins();
 
   const data = [
@@ -27,10 +27,12 @@ export default function BubbleChartD3() {
   ];
 
   useEffect(() => {
+    if (!ref.current) return;
     d3.select(ref.current).selectAll("*").remove();
 
     const width = 700;
     const height = 470;
+    const margin = 80;
 
     const svg = d3
       .select(ref.current)
@@ -38,36 +40,55 @@ export default function BubbleChartD3() {
       .attr("width", width)
       .attr("height", height);
 
+    /* ------------------ Scale ------------------ */
     const x = d3
       .scaleLinear()
       .domain([0, 100])
-      .range([80, width - 80]);
+      .range([margin, width - margin]);
+
     const y = d3
       .scaleLinear()
       .domain([0, 100])
-      .range([height - 80, 80]);
+      .range([height - margin, margin]);
+
     const radius = d3.scaleSqrt().domain([400, 9000]).range([10, 70]);
 
-    svg
+    /* ------------------ Axis ------------------ */
+    const xAxis = svg
       .append("g")
       .attr("transform", `translate(0, ${height / 2})`)
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x).ticks(5));
 
+    const yAxis = svg
+      .append("g")
+      .attr("transform", `translate(${width / 2}, 0)`)
+      .call(d3.axisLeft(y).ticks(5));
+
+    // 축 스타일
+    [xAxis, yAxis].forEach((axis) => {
+      axis.select(".domain").attr("stroke", "#9ca3af");
+      axis
+        .selectAll(".tick line")
+        .attr("stroke", "#b3b3b3")
+        .attr("stroke-dasharray", "2 2");
+      axis
+        .selectAll(".tick text")
+        .attr("fill", "#b3b3b3")
+        .attr("font-size", 11)
+        .attr("font-family", "var(--font-sub)");
+    });
+
+    /* ------------------ Axis Labels ------------------ */
     svg
       .append("text")
       .attr("x", width / 2)
       .attr("y", 30)
       .attr("text-anchor", "middle")
-      .attr("fill", "#ddd")
-      .text("External Stability")
+      .attr("fill", "#d1d5db")
       .attr("font-size", "var(--text-md)")
       .attr("font-weight", 300)
-      .attr("font-family", "var(--font-sub)");
-
-    svg
-      .append("g")
-      .attr("transform", `translate(${width / 2}, 0)`)
-      .call(d3.axisLeft(y));
+      .attr("font-family", "var(--font-sub)")
+      .text("External Stability");
 
     const internalLabel = svg
       .append("text")
@@ -75,7 +96,7 @@ export default function BubbleChartD3() {
       .attr("y", height / 2)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .attr("fill", "#ddd")
+      .attr("fill", "#d1d5db")
       .attr("font-size", "var(--text-md)")
       .attr("font-weight", 300)
       .attr("font-family", "var(--font-sub)");
@@ -83,57 +104,54 @@ export default function BubbleChartD3() {
     internalLabel
       .append("tspan")
       .attr("x", width - 20)
-      .attr("dy", "0em")
       .text("Internal");
-
     internalLabel
       .append("tspan")
       .attr("x", width - 20)
       .attr("dy", "1.4em")
       .text("Stability");
 
+    /* ------------------ Quadrant Lines ------------------ */
     svg
       .append("line")
       .attr("x1", x(50))
       .attr("x2", x(50))
-      .attr("y1", 80)
-      .attr("y2", height - 80)
-      .attr("stroke", "#999")
-      .attr("stroke-width", 2);
+      .attr("y1", margin)
+      .attr("y2", height - margin)
+      .attr("stroke", "#6b7280")
+      .attr("stroke-width", 1.5);
 
     svg
       .append("line")
-      .attr("x1", 80)
-      .attr("x2", width - 80)
+      .attr("x1", margin)
+      .attr("x2", width - margin)
       .attr("y1", y(50))
       .attr("y2", y(50))
-      .attr("stroke", "#999")
-      .attr("stroke-width", 2);
+      .attr("stroke", "#6b7280")
+      .attr("stroke-width", 1.5);
 
+    /* ------------------ Tooltip ------------------ */
     const tooltip = d3
       .select("body")
       .append("div")
-      .attr("class", "bubble-tooltip")
       .style("position", "absolute")
-      .style("padding", "8px 12px")
-      .style("background", "#111")
-      .style("border", "1px solid #888")
-      .style("border-radius", "6px")
+      .style("padding", "10px 12px")
+      .style("background", "rgba(0,0,0,0.9)")
+      .style("border", "1px solid #374151")
+      .style("border-radius", "8px")
       .style("color", "#fff")
       .style("font-size", "13px")
       .style("pointer-events", "none")
       .style("opacity", 0);
 
-    // -------------------------
-    // 선택된 코인 강조
-    // -------------------------
     const getOpacity = (symbol: string) => {
       if (selectedIds.length === 0) return 0.85;
       return selectedIds.includes(symbol) ? 1 : 0.15;
     };
 
+    /* ------------------ Bubbles ------------------ */
     svg
-      .selectAll(".bubble")
+      .selectAll("circle")
       .data(data)
       .enter()
       .append("circle")
@@ -142,25 +160,22 @@ export default function BubbleChartD3() {
       .attr("r", (d) => radius(d.marketCap))
       .attr("fill", (d) => COINS[d.symbol].color)
       .attr("opacity", (d) => getOpacity(d.symbol))
-      .on("mouseover", function (event, d) {
+      .on("mouseover", (event, d) => {
         tooltip.style("opacity", 1).html(
-          `
-          <strong>${d.symbol.toUpperCase()}</strong><br/>
-          Internal: ${d.internal}<br/>
-          External: ${d.external}<br/>
-          MarketCap: ${d.marketCap.toLocaleString()}
-        `
+          `<strong>${d.symbol.toUpperCase()}</strong><br/>
+             Internal: ${d.internal}<br/>
+             External: ${d.external}<br/>
+             MarketCap: ${d.marketCap.toLocaleString()}`
         );
       })
-      .on("mousemove", function (event) {
+      .on("mousemove", (event) => {
         tooltip
           .style("left", event.pageX + 12 + "px")
           .style("top", event.pageY - 28 + "px");
       })
-      .on("mouseout", function () {
-        tooltip.style("opacity", 0);
-      });
+      .on("mouseout", () => tooltip.style("opacity", 0));
 
+    /* ------------------ Labels ------------------ */
     svg
       .selectAll(".label")
       .data(data)
@@ -170,13 +185,12 @@ export default function BubbleChartD3() {
       .attr("y", (d) => y(d.internal))
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
-      .attr("fill", "#fff")
-      .attr("font-family", "var(--font-sub)")
+      .attr("fill", "#ffffff")
       .attr("font-size", 10)
-      .attr("font-weight", 400)
+      .attr("font-family", "var(--font-sub)")
       .attr("opacity", (d) => getOpacity(d.symbol))
       .text((d) => d.symbol.toUpperCase());
   }, [selectedIds]);
 
-  return <div ref={ref}></div>;
+  return <div ref={ref} />;
 }
