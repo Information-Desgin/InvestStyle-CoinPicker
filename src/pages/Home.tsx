@@ -11,7 +11,10 @@ import { useState } from "react";
 import { useSelectedCoins } from "../store/useSelectedCoins";
 
 export default function Home() {
-  const [flow, setFlow] = useState<("Inflow" | "Outflow")[]>(["Outflow"]);
+  const [flow, setFlow] = useState<("Inflow" | "Outflow")[]>([
+    "Outflow",
+    "Inflow",
+  ]);
   const { selectedIds } = useSelectedCoins();
   const showFlowToggle = selectedIds.length === 1;
   return (
