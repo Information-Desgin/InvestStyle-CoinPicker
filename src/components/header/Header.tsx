@@ -12,7 +12,9 @@ export default function Header() {
       {/* 기간 */}
       <div className="flex items-start justify-center gap-[30px]">
         <Period />
-        <Calendar />
+        <div className="pt-[18px]">
+          <Calendar />
+        </div>
       </div>
     </header>
   );

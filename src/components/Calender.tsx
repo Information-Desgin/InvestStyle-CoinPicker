@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 import "react-calendar/dist/Calendar.css";
 import { useDateRange } from "../store/useDateRange";
 
-export default function Calendar({ value }) {
-  const { setDateRange } = useDateRange();
+export default function Calendar() {
+  const { startDate, endDate, setDateRange } = useDateRange();
 
   const handleDateChange = (date: Date | [Date, Date]) => {
     if (Array.isArray(date)) {
@@ -13,28 +13,27 @@ export default function Calendar({ value }) {
     }
   };
 
+  const value = startDate && endDate ? [startDate, endDate] : null;
+
   return (
     <ReactCalendar
       onChange={handleDateChange}
       value={value}
-      selectRange={true}
-      formatDay={(locale, date) => dayjs(date).format("DD")}
-      formatShortWeekday={(locale, date) =>
-        dayjs(date).format("dd").toUpperCase()
-      }
-      formatMonthYear={(locale, date) => dayjs(date).format("MMMM YYYY")}
+      selectRange
+      formatDay={(_, date) => dayjs(date).format("DD")}
+      formatShortWeekday={(_, date) => dayjs(date).format("dd").toUpperCase()}
+      formatMonthYear={(_, date) => dayjs(date).format("MMMM YYYY")}
       tileClassName={({ date }) => {
-        if (!Array.isArray(value)) return "";
-        const [start, end] = value;
-        if (!start || !end) return "";
+        if (!startDate || !endDate) return "";
 
-        if (dayjs(date).isSame(start, "day")) return "range-start";
-        if (dayjs(date).isSame(end, "day")) return "range-end";
+        if (dayjs(date).isSame(startDate, "day")) return "range-start";
+        if (dayjs(date).isSame(endDate, "day")) return "range-end";
         if (
-          dayjs(date).isAfter(start, "day") &&
-          dayjs(date).isBefore(end, "day")
-        )
+          dayjs(date).isAfter(startDate, "day") &&
+          dayjs(date).isBefore(endDate, "day")
+        ) {
           return "range-middle";
+        }
 
         return "";
       }}

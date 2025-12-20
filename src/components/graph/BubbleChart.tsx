@@ -134,14 +134,19 @@ export default function BubbleChartD3() {
     const tooltip = d3
       .select("body")
       .append("div")
-      .style("position", "absolute")
-      .style("padding", "10px 12px")
-      .style("background", "rgba(0,0,0,0.9)")
-      .style("border", "1px solid #374151")
-      .style("border-radius", "8px")
-      .style("color", "#fff")
-      .style("font-size", "13px")
-      .style("pointer-events", "none")
+      .attr(
+        "class",
+        `
+      pointer-events-none fixed z-50
+      border border-point
+      bg-black/70
+      rounded-[5px]
+      p-4
+      min-w-[150px]
+      text-white
+      text-[13px]
+  `
+      )
       .style("opacity", 0);
 
     const getOpacity = (symbol: string) => {
