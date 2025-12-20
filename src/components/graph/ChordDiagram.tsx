@@ -41,7 +41,13 @@ const matrix = [
   [20, 15, 12, 18, 16, 10, 14, 9, 11, 13, 8, 12, 10, 7, 21, 0],
 ];
 
-export default function ChordDiagramD3() {
+type FlowType = "Inflow" | "Outflow";
+
+type ChordDiagramProps = {
+  flow?: FlowType[];
+};
+
+export default function ChordDiagramD3({ flow }: ChordDiagramProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const { selectedIds } = useSelectedCoins();
 
@@ -53,6 +59,7 @@ export default function ChordDiagramD3() {
     const height = 450;
     const outerRadius = Math.min(width, height) * 0.46;
     const innerRadius = outerRadius - 10;
+    const ribbonRadius = innerRadius - 15;
 
     const svg = container
       .append("svg")
@@ -60,6 +67,21 @@ export default function ChordDiagramD3() {
       .attr("height", height)
       .append("g")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+    /* ---------- Tooltip ---------- */
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("pointer-events", "none")
+      .style("background", "rgba(20,20,20,0.9)")
+      .style("color", "#fff")
+      .style("padding", "8px 10px")
+      .style("border-radius", "6px")
+      .style("font-size", "12px")
+      .style("line-height", "1.4")
+      .style("opacity", 0)
+      .style("z-index", "1000");
 
     /* ---------- Chord ---------- */
     const chord = d3.chord().padAngle(0.05).sortSubgroups(d3.descending)(
@@ -70,18 +92,42 @@ export default function ChordDiagramD3() {
       .arc<any>()
       .innerRadius(innerRadius)
       .outerRadius(outerRadius);
-    const ribbonGen = d3.ribbon<any>().radius(innerRadius);
+    const ribbonGen = d3.ribbon<any>().radius(ribbonRadius);
 
     /* ---------- Opacity rules ---------- */
     const arcOpacity = (id: string) =>
       selectedIds.length === 0 ? 1 : selectedIds.includes(id) ? 1 : 0.1;
 
+    const shouldShowRibbon = (source: string, target: string) => {
+      // 0. 코인 선택 없음 → 전체
+      if (selectedIds.length === 0) return true;
+
+      // 1. 코인 1개 선택
+      if (selectedIds.length === 1) {
+        const id = selectedIds[0];
+
+        // flow 없거나, 둘 다 선택된 경우 → 전체 (해당 코인 기준)
+        if (!flow || flow.length === 0 || flow.length === 2) {
+          return source === id || target === id;
+        }
+
+        // Inflow만
+        if (flow.includes("Inflow")) {
+          return target === id;
+        }
+
+        // Outflow만
+        if (flow.includes("Outflow")) {
+          return source === id;
+        }
+      }
+
+      // 2. 코인 2개 이상 → 선택된 코인들 사이
+      return selectedIds.includes(source) && selectedIds.includes(target);
+    };
+
     const ribbonOpacity = (s: string, t: string) =>
-      selectedIds.length === 0
-        ? 0.7
-        : selectedIds.includes(s) && selectedIds.includes(t)
-        ? 0.9
-        : 0.05;
+      shouldShowRibbon(s, t) ? 0.9 : 0.05;
 
     /* ---------- ARCS ---------- */
     svg
@@ -92,7 +138,26 @@ export default function ChordDiagramD3() {
       .append("path")
       .attr("d", arcGen)
       .attr("fill", (d) => COINS[keys[d.index]].color)
-      .attr("opacity", (d) => arcOpacity(keys[d.index]));
+      .attr("opacity", (d) => arcOpacity(keys[d.index]))
+      .on("mouseover", (event, d) => {
+        const key = keys[d.index];
+        tooltip.style("opacity", 1).html(`
+            <div style="font-weight:600">
+              ${COINS[key].chain}
+            </div>
+            <div style="opacity:0.8">
+              Total Flow: ${d.value.toLocaleString()}
+            </div>
+          `);
+      })
+      .on("mousemove", (event) => {
+        tooltip
+          .style("left", `${event.pageX + 12}px`)
+          .style("top", `${event.pageY + 12}px`);
+      })
+      .on("mouseout", () => {
+        tooltip.style("opacity", 0);
+      });
 
     /* ---------- LABEL PATH (원 둘레용) ---------- */
     const labelArc = d3
@@ -143,11 +208,37 @@ export default function ChordDiagramD3() {
       .enter()
       .append("path")
       .attr("d", ribbonGen)
-      .attr("fill", (d) => COINS[keys[d.source.index]].color)
+      .attr("fill", (d) => COINS[keys[d.target.index]].color)
       .attr("opacity", (d) =>
         ribbonOpacity(keys[d.source.index], keys[d.target.index])
-      );
-  }, [selectedIds]);
+      )
+      .on("mouseover", (event, d) => {
+        const sourceKey = keys[d.source.index];
+        const targetKey = keys[d.target.index];
+
+        tooltip.style("opacity", 1).html(`
+            <div style="font-weight:600">
+              ${COINS[sourceKey].chain} → ${COINS[targetKey].chain}
+            </div>
+            <div style="opacity:0.8">
+              Volume: ${d.source.value.toLocaleString()}
+            </div>
+          `);
+      })
+      .on("mousemove", (event) => {
+        tooltip
+          .style("left", `${event.pageX + 12}px`)
+          .style("top", `${event.pageY + 12}px`);
+      })
+      .on("mouseout", () => {
+        tooltip.style("opacity", 0);
+      });
+
+    /* ---------- cleanup ---------- */
+    return () => {
+      tooltip.remove();
+    };
+  }, [selectedIds, flow]);
 
   return <div ref={ref} />;
 }
