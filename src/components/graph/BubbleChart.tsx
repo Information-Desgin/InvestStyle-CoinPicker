@@ -56,24 +56,41 @@ export default function BubbleChartD3() {
     svg
       .append("text")
       .attr("x", width / 2)
-      .attr("y", height - 20)
+      .attr("y", 30)
       .attr("text-anchor", "middle")
       .attr("fill", "#ddd")
-      .text("External Stability");
+      .text("External Stability")
+      .attr("font-size", "var(--text-md)")
+      .attr("font-weight", 300)
+      .attr("font-family", "var(--font-sub)");
 
     svg
       .append("g")
       .attr("transform", `translate(${width / 2}, 0)`)
       .call(d3.axisLeft(y));
 
-    svg
+    const internalLabel = svg
       .append("text")
-      .attr("x", -height / 2)
-      .attr("y", 30)
+      .attr("x", width - 20)
+      .attr("y", height / 2)
       .attr("text-anchor", "middle")
-      .attr("transform", "rotate(-90)")
+      .attr("dominant-baseline", "middle")
       .attr("fill", "#ddd")
-      .text("Internal Stability");
+      .attr("font-size", "var(--text-md)")
+      .attr("font-weight", 300)
+      .attr("font-family", "var(--font-sub)");
+
+    internalLabel
+      .append("tspan")
+      .attr("x", width - 20)
+      .attr("dy", "0em")
+      .text("Internal");
+
+    internalLabel
+      .append("tspan")
+      .attr("x", width - 20)
+      .attr("dy", "1.4em")
+      .text("Stability");
 
     svg
       .append("line")
@@ -108,7 +125,7 @@ export default function BubbleChartD3() {
       .style("opacity", 0);
 
     // -------------------------
-    // 선택된 코인 강조 로직
+    // 선택된 코인 강조
     // -------------------------
     const getOpacity = (symbol: string) => {
       if (selectedIds.length === 0) return 0.85;

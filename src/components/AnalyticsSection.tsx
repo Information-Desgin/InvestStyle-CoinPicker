@@ -28,7 +28,9 @@ export function AnalyticsSection({
         {togglebtns}
       </header>
 
-      <div className="flex-1 w-full flex justify-center">{children}</div>
+      <div className="flex-1 w-full flex justify-center items-center">
+        {children}
+      </div>
     </section>
   );
 }

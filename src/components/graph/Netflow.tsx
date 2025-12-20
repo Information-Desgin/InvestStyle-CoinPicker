@@ -26,15 +26,26 @@ export default function NetFlow() {
   return (
     <div className="w-full h-[380px]">
       <ResponsiveBoxPlot
+        // layout="horizontal"
         data={data}
         margin={{ top: 20, right: 40, bottom: 40, left: 50 }}
         minValue={-1}
         maxValue={1}
         padding={0.5}
-        colors={({ group }) => COINS[group]?.color ?? "#60a5fa"}
-        borderRadius={2}
-        borderWidth={2}
-        borderColor={{ from: "color", modifiers: [["darker", 0.4]] }}
+        colors={({ group }) => {
+          const baseColor = COINS[group]?.color ?? "#60a5fa";
+          return `${baseColor}66`; // HEX 코드 뒤에 투명도 추가
+        }}
+        boxOpacity={0.8}
+        borderWidth={3}
+        medianWidth={3}
+        whiskerWidth={3}
+        borderColor={({ group }) => COINS[group]?.color ?? "#60a5fa"}
+        medianColor={({ group }) => COINS[group]?.color ?? "#60a5fa"}
+        whiskerColor={({ group }) => COINS[group]?.color ?? "#60a5fa"}
+        enableOutliers={false}
+        enableWhiskerDots={true}
+        whiskerEndSize={0.2}
         axisBottom={{
           legend: "Coin",
           legendOffset: 32,
@@ -44,39 +55,63 @@ export default function NetFlow() {
           legend: "Netflow",
           legendOffset: -40,
         }}
-        medianWidth={2}
-        whiskerWidth={2}
-        tooltip={({ data }) => (
-          <div className="rounded-md border border-neutral-700 bg-black/90 px-3 py-2 text-xs text-white">
-            <div className="mb-2 font-medium">{data.group}</div>
+        tooltip={(tooltipProps) => {
+          const { group, color, data } = tooltipProps;
+          // console.log("tooltipProps", tooltipProps);
 
-            <div className="space-y-1 font-mono">
-              <div className="flex justify-between">
-                <span>Min</span>
-                <span>{data.min.toFixed(2)}</span>
+          if (!data?.values) return null;
+
+          const [min, q1, median, q3, max] = data.values;
+
+          return (
+            <div
+              style={{
+                background: "rgba(0,0,0,0.9)",
+                border: `2px solid ${color}`,
+                borderRadius: 12,
+                padding: "12px 14px",
+                minWidth: 180,
+                color: "#fff",
+                fontSize: 12,
+              }}
+            >
+              <div style={{ fontWeight: 600, marginBottom: 8, color }}>
+                {group.toUpperCase()}
               </div>
-              <div className="flex justify-between">
-                <span>Q1</span>
-                <span>{data.q1.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Median</span>
-                <span>{data.median.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Q3</span>
-                <span>{data.q3.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Max</span>
-                <span>{data.max.toFixed(2)}</span>
+
+              <div style={{ fontFamily: "ui-monospace", lineHeight: 1.6 }}>
+                <div className="flex justify-between">
+                  <span>Max</span>
+                  <span>{max.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Q3</span>
+                  <span>{q3.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-yellow-400">
+                  <span>Median</span>
+                  <span>{median.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Q1</span>
+                  <span>{q1.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Min</span>
+                  <span>{min.toFixed(2)}</span>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        }}
         theme={{
           background: "transparent",
           axis: {
+            legend: {
+              text: {
+                fill: "#ffffff",
+              },
+            },
             ticks: {
               text: { fill: "#9ca3af", fontSize: 11 },
             },

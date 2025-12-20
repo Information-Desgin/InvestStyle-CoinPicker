@@ -55,8 +55,8 @@ export default function ChordDiagramD3({ flow }: ChordDiagramProps) {
     const container = d3.select(ref.current);
     container.selectAll("*").remove();
 
-    const width = 450;
-    const height = 450;
+    const width = 440;
+    const height = 440;
     const outerRadius = Math.min(width, height) * 0.46;
     const innerRadius = outerRadius - 10;
     const ribbonRadius = innerRadius - 15;

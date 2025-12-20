@@ -58,20 +58,73 @@ export default function ExternalStability() {
         pointColor="#000"
         enableSlices="x"
         useMesh
-        tooltip={({ point }) => (
-          <div className="rounded-md border border-neutral-700 bg-black/90 px-3 py-2 text-xs text-white">
-            <div className="mb-1 font-medium">
-              {timeFormat("%Y.%m.%d")(point.data.x as Date)}
+        sliceTooltip={({ slice }) => (
+          <div
+            style={{
+              background: "rgba(0,0,0,0.85)",
+              border: "2px solid #38bdf8",
+              borderRadius: 14,
+              padding: "16px 18px",
+              minWidth: 200,
+              color: "#fff",
+            }}
+          >
+            {/* 날짜 */}
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 600,
+                marginBottom: 14,
+                letterSpacing: "0.02em",
+              }}
+            >
+              {timeFormat("%Y.%m.%d")(slice.points[0].data.x as Date)}
             </div>
-            <div className="flex items-center gap-2">
-              <span
-                className="inline-block h-2 w-2 rounded-full"
-                style={{ backgroundColor: point.seriesColor }}
-              />
-              <span>{point.seriesId}</span>
-              <span className="ml-auto font-mono">
-                {Number(point.data.actual).toFixed(2)}
-              </span>
+
+            {/* 리스트 */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {slice.points.map((point) => {
+                const label = point.seriesId ?? point.id?.split(".")[0];
+
+                return (
+                  <div
+                    key={point.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      fontSize: 15,
+                    }}
+                  >
+                    {/* 코인 색상 점 */}
+                    <span
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        backgroundColor: point.seriesColor,
+                        flexShrink: 0,
+                      }}
+                    />
+
+                    {/* 코인 이름 */}
+                    <span style={{ fontWeight: 500 }}>
+                      {label?.toUpperCase()}
+                    </span>
+
+                    {/* 값 */}
+                    <span
+                      style={{
+                        marginLeft: "auto",
+                        fontFamily:
+                          "ui-monospace, SFMono-Regular, Menlo, monospace",
+                      }}
+                    >
+                      {Number(point.data.actual).toFixed(1)}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

@@ -18,9 +18,9 @@ export default function InvestStyleSelector({
       {/* 그리드 */}
       <div className="grid grid-cols-2 grid-rows-2 w-full h-full">
         <Quadrant
-          label="Aggressive"
-          active={value === "aggressive"}
-          onClick={() => onChange("aggressive")}
+          label="Neutral"
+          active={value === "neutral"}
+          onClick={() => onChange("neutral")}
           position="top-left"
         />
         <Quadrant
@@ -30,15 +30,15 @@ export default function InvestStyleSelector({
           position="top-right"
         />
         <Quadrant
-          label="Cautious"
-          active={value === "cautious"}
-          onClick={() => onChange("cautious")}
+          label="Aggressive"
+          active={value === "aggressive"}
+          onClick={() => onChange("aggressive")}
           position="bottom-left"
         />
         <Quadrant
-          label="Neutral"
-          active={value === "neutral"}
-          onClick={() => onChange("neutral")}
+          label="Cautious"
+          active={value === "cautious"}
+          onClick={() => onChange("cautious")}
           position="bottom-right"
         />
       </div>
