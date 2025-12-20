@@ -85,7 +85,7 @@ export default function InternalStability() {
           if (!row) return null;
 
           return (
-            <TooltipContainer title={coin}>
+            <TooltipContainer title={coin.toUpperCase()}>
               <div
                 style={{ display: "flex", flexDirection: "column" }}
                 className="gap-[10px]"

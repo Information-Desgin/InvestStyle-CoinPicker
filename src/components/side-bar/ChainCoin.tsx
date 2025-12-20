@@ -3,6 +3,7 @@ import clsx from "clsx";
 type ChainCoinProps = {
   name: string;
   coin: string;
+  color: string;
   coinImg: string;
   isSelected: boolean;
   onClick?: () => void;
@@ -16,6 +17,7 @@ type ChainCoinProps = {
 export default function ChainCoin({
   name,
   coin,
+  color,
   coinImg,
   isSelected,
   onClick,
@@ -35,7 +37,7 @@ export default function ChainCoin({
         {isSelected && (
           <div
             className="absolute h-full w-[5px] left-0 top-0 bg-point"
-            // style={{ backgroundColor: color }}
+            style={{ backgroundColor: color }}
           />
         )}
 
