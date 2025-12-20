@@ -42,15 +42,15 @@ const matrix = [
 ];
 
 export default function ChordDiagramD3() {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const { selectedIds } = useSelectedCoins();
 
   useEffect(() => {
     const container = d3.select(ref.current);
     container.selectAll("*").remove();
 
-    const width = 430;
-    const height = 430;
+    const width = 450;
+    const height = 450;
     const outerRadius = Math.min(width, height) * 0.46;
     const innerRadius = outerRadius - 10;
 
@@ -61,42 +61,29 @@ export default function ChordDiagramD3() {
       .append("g")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    // Tooltip 만들기
-    const tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("class", "chord-tooltip")
-      .style("position", "absolute")
-      .style("padding", "8px 12px")
-      .style("background", "#111")
-      .style("color", "white")
-      .style("border", "1px solid #666")
-      .style("border-radius", "6px")
-      .style("font-size", "12px")
-      .style("pointer-events", "none")
-      .style("opacity", 0);
-
-    // Chord 계산
+    /* ---------- Chord ---------- */
     const chord = d3.chord().padAngle(0.05).sortSubgroups(d3.descending)(
       matrix
     );
-    const arcGen = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
-    const ribbonGen = d3.ribbon().radius(innerRadius);
 
-    // 투명도 규칙
-    const arcOpacity = (id) =>
+    const arcGen = d3
+      .arc<any>()
+      .innerRadius(innerRadius)
+      .outerRadius(outerRadius);
+    const ribbonGen = d3.ribbon<any>().radius(innerRadius);
+
+    /* ---------- Opacity rules ---------- */
+    const arcOpacity = (id: string) =>
       selectedIds.length === 0 ? 1 : selectedIds.includes(id) ? 1 : 0.1;
 
-    const ribbonOpacity = (s, t) =>
+    const ribbonOpacity = (s: string, t: string) =>
       selectedIds.length === 0
         ? 0.7
         : selectedIds.includes(s) && selectedIds.includes(t)
         ? 0.9
         : 0.05;
 
-    // --------------------------
-    // ARCS
-    // --------------------------
+    /* ---------- ARCS ---------- */
     svg
       .append("g")
       .selectAll("path")
@@ -105,51 +92,50 @@ export default function ChordDiagramD3() {
       .append("path")
       .attr("d", arcGen)
       .attr("fill", (d) => COINS[keys[d.index]].color)
-      .attr("opacity", (d) => arcOpacity(keys[d.index]))
-      .on("mouseover", (event, d) => {
-        tooltip
-          .style("opacity", 1)
-          .html(`<strong>${keys[d.index]}</strong><br/>value: ${d.value}`);
-      })
-      .on("mousemove", (event) => {
-        tooltip
-          .style("left", event.pageX + 12 + "px")
-          .style("top", event.pageY - 28 + "px");
-      })
-      .on("mouseout", () => tooltip.style("opacity", 0));
+      .attr("opacity", (d) => arcOpacity(keys[d.index]));
 
-    // --------------------------
-    // LABELS
-    // --------------------------
-    svg
-      .append("g")
+    /* ---------- LABEL PATH (원 둘레용) ---------- */
+    const labelArc = d3
+      .arc<any>()
+      .innerRadius(outerRadius + 10)
+      .outerRadius(outerRadius + 10);
+
+    const labelGroup = svg.append("g");
+
+    /* path 생성 */
+    labelGroup
+      .selectAll("path")
+      .data(chord.groups)
+      .enter()
+      .append("path")
+      .attr("id", (_, i) => `label-path-${i}`)
+      .attr("d", labelArc)
+      .attr("fill", "none");
+
+    /* ---------- LABEL TEXT ---------- */
+    labelGroup
       .selectAll("text")
       .data(chord.groups)
       .enter()
       .append("text")
-      .each(function (d) {
-        d.angle = (d.startAngle + d.endAngle) / 2;
-      })
-      .attr("dy", "0.35em")
-      .attr("transform", function (d) {
-        const angleDeg = (d.angle * 180) / Math.PI;
-
-        return `
-    rotate(${angleDeg})
-    translate(${outerRadius + 12})
-    ${d.angle > Math.PI ? "rotate(180)" : ""}
-  `;
-      })
-
-      .attr("text-anchor", (d) => (d.angle > Math.PI ? "end" : "start"))
       .attr("fill", "#fff")
-      .attr("font-size", 11)
+      .attr("font-size", "var(--text-sm")
+      .attr("font-weight", "var(--font-weight-medium)")
+      .attr("font-family", "var(--font-sub")
       .attr("opacity", (d) => arcOpacity(keys[d.index]))
-      .text((d) => keys[d.index]);
+      .append("textPath")
+      .attr("href", (_, i) => `#label-path-${i}`)
+      .attr("startOffset", "25%")
+      .attr("text-anchor", "middle")
+      .attr("side", (d) => {
+        const angle = (d.startAngle + d.endAngle) / 2;
+        return angle > Math.PI / 2 && angle < (3 * Math.PI) / 2
+          ? "right"
+          : "left";
+      })
+      .text((d) => COINS[keys[d.index]].chain.toUpperCase());
 
-    // --------------------------
-    // RIBBONS
-    // --------------------------
+    /* ---------- RIBBONS ---------- */
     svg
       .append("g")
       .selectAll("path")
@@ -160,21 +146,8 @@ export default function ChordDiagramD3() {
       .attr("fill", (d) => COINS[keys[d.source.index]].color)
       .attr("opacity", (d) =>
         ribbonOpacity(keys[d.source.index], keys[d.target.index])
-      )
-      .on("mouseover", (event, d) => {
-        tooltip.style("opacity", 1).html(`
-            <strong>${keys[d.source.index]}</strong> → 
-            <strong>${keys[d.target.index]}</strong><br/>
-            value: ${d.source.value}
-          `);
-      })
-      .on("mousemove", (event) => {
-        tooltip
-          .style("left", event.pageX + 12 + "px")
-          .style("top", event.pageY - 28 + "px");
-      })
-      .on("mouseout", () => tooltip.style("opacity", 0));
+      );
   }, [selectedIds]);
 
-  return <div ref={ref}></div>;
+  return <div ref={ref} />;
 }
