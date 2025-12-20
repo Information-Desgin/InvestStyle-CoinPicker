@@ -54,8 +54,7 @@ export default function ExternalStability() {
         curve="monotoneX"
         colors={{ datum: "color" }}
         lineWidth={2}
-        pointSize={5}
-        pointBorderWidth={2}
+        enablePoints={false}
         pointBorderColor={{ from: "seriesColor" }}
         pointColor="#000"
         enableSlices="x"

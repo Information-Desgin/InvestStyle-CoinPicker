@@ -1,12 +1,16 @@
-"use client";
-
 import ReactCalendar from "react-calendar";
 import dayjs from "dayjs";
 import "react-calendar/dist/Calendar.css";
+import { useDateRange } from "../store/useDateRange";
 
-export default function Calendar({ onChange, value }) {
-  const handleDateChange = (date) => {
-    onChange(date);
+export default function Calendar({ value }) {
+  const { setDateRange } = useDateRange();
+
+  const handleDateChange = (date: Date | [Date, Date]) => {
+    if (Array.isArray(date)) {
+      const [start, end] = date;
+      setDateRange(start ?? null, end ?? null);
+    }
   };
 
   return (
