@@ -6,6 +6,8 @@ import {
   generateDummyCapitalFlowBox,
   type CapitalFlowBox,
 } from "../../data/mockCapitalFlowBox";
+import { TooltipContainer } from "../interaction/tooltip/ToolTipContainer";
+import { TooltipRow } from "../interaction/tooltip/ToolTipRow";
 
 export default function NetFlow() {
   const { selectedIds } = useSelectedCoins();
@@ -57,51 +59,40 @@ export default function NetFlow() {
         }}
         tooltip={(tooltipProps) => {
           const { group, color, data } = tooltipProps;
-          // console.log("tooltipProps", tooltipProps);
 
           if (!data?.values) return null;
 
           const [min, q1, median, q3, max] = data.values;
+          const safeColor = COINS[group]?.color ?? "#60a5fa";
 
           return (
-            <div
-              style={{
-                background: "rgba(0,0,0,0.9)",
-                border: `2px solid ${color}`,
-                borderRadius: 12,
-                padding: "12px 14px",
-                minWidth: 180,
-                color: "#fff",
-                fontSize: 12,
-              }}
-            >
-              <div style={{ fontWeight: 600, marginBottom: 8, color }}>
-                {group.toUpperCase()}
-              </div>
-
-              <div style={{ fontFamily: "ui-monospace", lineHeight: 1.6 }}>
-                <div className="flex justify-between">
-                  <span>Max</span>
-                  <span>{max.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Q3</span>
-                  <span>{q3.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-yellow-400">
-                  <span>Median</span>
-                  <span>{median.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Q1</span>
-                  <span>{q1.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Min</span>
-                  <span>{min.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
+            <TooltipContainer title={group.toUpperCase()}>
+              <TooltipRow
+                dotColor={safeColor}
+                label="Max"
+                value={max.toFixed(2)}
+              />
+              <TooltipRow
+                dotColor={safeColor}
+                label="Q3"
+                value={q3.toFixed(2)}
+              />
+              <TooltipRow
+                dotColor={safeColor}
+                label="Median"
+                value={median.toFixed(2)}
+              />
+              <TooltipRow
+                dotColor={safeColor}
+                label="Q1"
+                value={q1.toFixed(2)}
+              />
+              <TooltipRow
+                dotColor={safeColor}
+                label="Min"
+                value={min.toFixed(2)}
+              />
+            </TooltipContainer>
           );
         }}
         theme={{
@@ -109,7 +100,7 @@ export default function NetFlow() {
           axis: {
             legend: {
               text: {
-                fill: "#ffffff",
+                fill: "#9ca3af",
               },
             },
             ticks: {

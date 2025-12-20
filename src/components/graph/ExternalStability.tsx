@@ -4,6 +4,8 @@ import { timeFormat } from "d3-time-format";
 import { useSelectedCoins } from "../../store/useSelectedCoins";
 import { COINS } from "../../data/coins";
 import { generateDummyExternalStability } from "../../data/mockExternalStability";
+import { TooltipContainer } from "../interaction/tooltip/ToolTipContainer";
+import { TooltipRow } from "../interaction/tooltip/ToolTipRow";
 
 export default function ExternalStability() {
   const { selectedIds } = useSelectedCoins();
@@ -71,65 +73,20 @@ export default function ExternalStability() {
           );
 
           return (
-            <div
-              style={{
-                background: "rgba(0,0,0,0.85)",
-                border: "2px solid #38bdf8",
-                borderRadius: 14,
-                padding: "16px 18px",
-                minWidth: 220,
-                color: "#fff",
-              }}
+            <TooltipContainer
+              title={timeFormat("%Y.%m.%d")(slice.points[0].data.x as Date)}
             >
-              {/* 날짜 */}
-              <div
-                style={{
-                  fontSize: 18,
-                  fontWeight: 600,
-                  marginBottom: 14,
-                }}
-              >
-                {timeFormat("%Y.%m.%d")(slice.points[0].data.x as Date)}
-              </div>
-
-              {/* 코인 리스트 (값 기준 내림차순) */}
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 12 }}
-              >
+              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                 {sortedPoints.map((point) => (
-                  <div
+                  <TooltipRow
                     key={point.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      fontSize: 15,
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        backgroundColor: point.seriesColor,
-                      }}
-                    />
-                    <span style={{ fontWeight: 500 }}>
-                      {String(point.seriesId).toUpperCase()}
-                    </span>
-                    <span
-                      style={{
-                        marginLeft: "auto",
-                        fontFamily:
-                          "ui-monospace, SFMono-Regular, Menlo, monospace",
-                      }}
-                    >
-                      {Number(point.data.actual).toFixed(1)}
-                    </span>
-                  </div>
+                    dotColor={point.seriesColor}
+                    label={String(point.seriesId).toUpperCase()}
+                    value={Number(point.data.actual).toFixed(1)}
+                  />
                 ))}
               </div>
-            </div>
+            </TooltipContainer>
           );
         }}
         theme={{

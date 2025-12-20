@@ -171,8 +171,9 @@ export default function BubbleChartD3() {
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .attr("fill", "#fff")
-      .attr("font-size", 12)
-      .attr("font-weight", 600)
+      .attr("font-family", "var(--font-sub)")
+      .attr("font-size", 10)
+      .attr("font-weight", 400)
       .attr("opacity", (d) => getOpacity(d.symbol))
       .text((d) => d.symbol.toUpperCase());
   }, [selectedIds]);

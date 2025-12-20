@@ -4,6 +4,8 @@ import * as d3 from "d3";
 import { useSelectedCoins } from "../../store/useSelectedCoins";
 import { COINS } from "../../data/coins";
 import { generateDummyInternalStability } from "../../data/mockInternalStability";
+import { TooltipContainer } from "../interaction/tooltip/ToolTipContainer";
+import { TooltipRow } from "../interaction/tooltip/ToolTipRow";
 
 /* 내부 안정성 지표 */
 const KEYS = ["onchain", "active", "staking", "price", "validator"] as const;
@@ -83,85 +85,26 @@ export default function InternalStability() {
           if (!row) return null;
 
           return (
-            <div
-              style={{
-                background: "rgba(0,0,0,0.9)",
-                border: "2px solid #60a5fa",
-                borderRadius: 14,
-                padding: "18px 20px",
-                minWidth: 260,
-                color: "#fff",
-              }}
-            >
-              {/* 코인명 */}
-              <div
-                style={{
-                  fontSize: 22,
-                  fontWeight: 600,
-                  marginBottom: 16,
-                }}
-              >
-                {coin}
-              </div>
-
-              {/* 지표 리스트 */}
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 14 }}
-              >
+            <TooltipContainer title={coin}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                 {KEYS.map((key) => {
                   const isActive = key === activeKey;
 
-                  const dotColor = applyLightness(
-                    coinColor,
-                    METRIC_LIGHTNESS[key]
-                  );
-
                   return (
-                    <div
+                    <TooltipRow
                       key={key}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 14,
-                        fontSize: isActive ? 17 : 16,
-                        fontWeight: isActive ? 600 : 400,
-                        background: isActive
-                          ? "rgba(96,165,250,0.12)"
-                          : "transparent",
-                        padding: "6px 8px",
-                        borderRadius: 8,
-                      }}
-                    >
-                      {/* 지표별 명도 점 */}
-                      <span
-                        style={{
-                          width: isActive ? 14 : 12,
-                          height: isActive ? 14 : 12,
-                          borderRadius: "50%",
-                          backgroundColor: dotColor,
-                          flexShrink: 0,
-                        }}
-                      />
-
-                      {/* 지표 이름 */}
-                      <span style={{ flex: 1 }}>{KEY_LABEL[key]}</span>
-
-                      {/* 값 */}
-                      <span
-                        style={{
-                          fontFamily:
-                            "ui-monospace, SFMono-Regular, Menlo, monospace",
-                          fontSize: isActive ? 18 : 16,
-                          color: isActive ? "#e0f2fe" : "#fff",
-                        }}
-                      >
-                        {Number(row[key]).toFixed(1)}
-                      </span>
-                    </div>
+                      dotColor={applyLightness(
+                        coinColor,
+                        METRIC_LIGHTNESS[key]
+                      )}
+                      label={KEY_LABEL[key]}
+                      value={Number(row[key]).toFixed(1)}
+                      isActive={isActive}
+                    />
                   );
                 })}
               </div>
-            </div>
+            </TooltipContainer>
           );
         }}
         legends={[
@@ -208,7 +151,9 @@ export default function InternalStability() {
           legends: {
             text: {
               fill: "#d1d5db",
-              fontSize: 11,
+              fontSize: "var(--text-xs)",
+              fontFamily: "var(--font-sub)",
+              fontWeight: "var(--font-weight-light)",
             },
           },
         }}
