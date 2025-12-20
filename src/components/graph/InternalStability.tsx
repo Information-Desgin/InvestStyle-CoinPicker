@@ -50,7 +50,7 @@ export default function InternalStability() {
   }
 
   return (
-    <div className="w-full h-[300px]">
+    <div className="w-full h-[300px] pt-4">
       <ResponsiveBar
         data={data}
         keys={STACK_KEYS}

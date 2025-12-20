@@ -24,7 +24,7 @@ export default function NetFlow() {
   }
 
   return (
-    <div className="w-full h-[300px]">
+    <div className="w-full h-[300px] pt-4">
       <ResponsiveBoxPlot
         // layout="horizontal"
         data={data}
