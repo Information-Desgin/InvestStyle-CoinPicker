@@ -68,20 +68,22 @@ export default function ChordDiagramD3({ flow }: ChordDiagramProps) {
       .append("g")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    /* ---------- Tooltip ---------- */
+    /* ------------------ Tooltip ------------------ */
     const tooltip = d3
       .select("body")
       .append("div")
-      .style("position", "absolute")
-      .style("pointer-events", "none")
-      .style("background", "rgba(20,20,20,0.9)")
-      .style("color", "#fff")
-      .style("padding", "8px 10px")
-      .style("border-radius", "6px")
-      .style("font-size", "12px")
-      .style("line-height", "1.4")
-      .style("opacity", 0)
-      .style("z-index", "1000");
+      .attr(
+        "class",
+        `
+      pointer-events-none fixed z-50
+      border border-point
+      bg-black/90
+      rounded-[5px]
+      p-4
+      min-w-[150px]
+  `
+      )
+      .style("opacity", 0);
 
     /* ---------- Chord ---------- */
     const chord = d3.chord().padAngle(0.05).sortSubgroups(d3.descending)(
@@ -142,10 +144,10 @@ export default function ChordDiagramD3({ flow }: ChordDiagramProps) {
       .on("mouseover", (event, d) => {
         const key = keys[d.index];
         tooltip.style("opacity", 1).html(`
-            <div style="font-weight:600">
+            <div class="font-chainname-bold mb-2">
               ${COINS[key].chain}
             </div>
-            <div style="opacity:0.8">
+            <div class="font-body1-light">
               Total Flow: ${d.value.toLocaleString()}
             </div>
           `);
@@ -217,10 +219,10 @@ export default function ChordDiagramD3({ flow }: ChordDiagramProps) {
         const targetKey = keys[d.target.index];
 
         tooltip.style("opacity", 1).html(`
-            <div style="font-weight:600">
+            <div class="font-chainname-bold mb-2">
               ${COINS[sourceKey].chain} → ${COINS[targetKey].chain}
             </div>
-            <div style="opacity:0.8">
+            <div class="font-body1-light">
               Volume: ${d.source.value.toLocaleString()}
             </div>
           `);

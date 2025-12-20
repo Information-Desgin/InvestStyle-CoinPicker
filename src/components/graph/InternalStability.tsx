@@ -86,27 +86,19 @@ export default function InternalStability() {
 
           return (
             <TooltipContainer title={coin.toUpperCase()}>
-              <div
-                style={{ display: "flex", flexDirection: "column" }}
-                className="gap-[10px]"
-              >
-                {KEYS.map((key) => {
-                  const isActive = key === activeKey;
+              {KEYS.map((key) => {
+                const isActive = key === activeKey;
 
-                  return (
-                    <TooltipRow
-                      key={key}
-                      dotColor={applyLightness(
-                        coinColor,
-                        METRIC_LIGHTNESS[key]
-                      )}
-                      label={KEY_LABEL[key]}
-                      value={Number(row[key]).toFixed(1)}
-                      isActive={isActive}
-                    />
-                  );
-                })}
-              </div>
+                return (
+                  <TooltipRow
+                    key={key}
+                    dotColor={applyLightness(coinColor, METRIC_LIGHTNESS[key])}
+                    label={KEY_LABEL[key]}
+                    value={Number(row[key]).toFixed(1)}
+                    isActive={isActive}
+                  />
+                );
+              })}
             </TooltipContainer>
           );
         }}

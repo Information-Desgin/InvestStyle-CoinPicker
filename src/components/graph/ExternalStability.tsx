@@ -76,16 +76,14 @@ export default function ExternalStability() {
             <TooltipContainer
               title={timeFormat("%Y.%m.%d")(slice.points[0].data.x as Date)}
             >
-              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                {sortedPoints.map((point) => (
-                  <TooltipRow
-                    key={point.id}
-                    dotColor={point.seriesColor}
-                    label={String(point.seriesId).toUpperCase()}
-                    value={Number(point.data.actual).toFixed(1)}
-                  />
-                ))}
-              </div>
+              {sortedPoints.map((point) => (
+                <TooltipRow
+                  key={point.id}
+                  dotColor={point.seriesColor}
+                  label={String(point.seriesId).toUpperCase()}
+                  value={Number(point.data.actual).toFixed(1)}
+                />
+              ))}
             </TooltipContainer>
           );
         }}

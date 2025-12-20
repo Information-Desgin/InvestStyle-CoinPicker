@@ -31,8 +31,9 @@ export default function BubbleChartD3() {
     d3.select(ref.current).selectAll("*").remove();
 
     const width = 700;
-    const height = 470;
-    const margin = 80;
+    const height = 480;
+    const xMargin = 50;
+    const yMargin = 70;
 
     const svg = d3
       .select(ref.current)
@@ -40,31 +41,32 @@ export default function BubbleChartD3() {
       .attr("width", width)
       .attr("height", height);
 
+    const root = svg.append("g").attr("transform", "translate(-10, 30)");
+
     /* ------------------ Scale ------------------ */
     const x = d3
       .scaleLinear()
       .domain([0, 100])
-      .range([margin, width - margin]);
+      .range([xMargin, width - xMargin]);
 
     const y = d3
       .scaleLinear()
       .domain([0, 100])
-      .range([height - margin, margin]);
+      .range([height - yMargin, yMargin]);
 
     const radius = d3.scaleSqrt().domain([400, 9000]).range([10, 70]);
 
     /* ------------------ Axis ------------------ */
-    const xAxis = svg
+    const xAxis = root
       .append("g")
       .attr("transform", `translate(0, ${height / 2})`)
       .call(d3.axisBottom(x).ticks(5));
 
-    const yAxis = svg
+    const yAxis = root
       .append("g")
       .attr("transform", `translate(${width / 2}, 0)`)
       .call(d3.axisLeft(y).ticks(5));
 
-    // 축 스타일
     [xAxis, yAxis].forEach((axis) => {
       axis.select(".domain").attr("stroke", "#9ca3af");
       axis
@@ -79,7 +81,7 @@ export default function BubbleChartD3() {
     });
 
     /* ------------------ Axis Labels ------------------ */
-    svg
+    root
       .append("text")
       .attr("x", width / 2)
       .attr("y", 30)
@@ -90,7 +92,7 @@ export default function BubbleChartD3() {
       .attr("font-family", "var(--font-sub)")
       .text("External Stability");
 
-    const internalLabel = svg
+    const internalLabel = root
       .append("text")
       .attr("x", width - 20)
       .attr("y", height / 2)
@@ -112,19 +114,19 @@ export default function BubbleChartD3() {
       .text("Stability");
 
     /* ------------------ Quadrant Lines ------------------ */
-    svg
+    root
       .append("line")
       .attr("x1", x(50))
       .attr("x2", x(50))
-      .attr("y1", margin)
-      .attr("y2", height - margin)
+      .attr("y1", yMargin)
+      .attr("y2", height - yMargin)
       .attr("stroke", "#6b7280")
       .attr("stroke-width", 1.5);
 
-    svg
+    root
       .append("line")
-      .attr("x1", margin)
-      .attr("x2", width - margin)
+      .attr("x1", xMargin)
+      .attr("x2", width - xMargin)
       .attr("y1", y(50))
       .attr("y2", y(50))
       .attr("stroke", "#6b7280")
@@ -137,15 +139,13 @@ export default function BubbleChartD3() {
       .attr(
         "class",
         `
-      pointer-events-none fixed z-50
-      border border-point
-      bg-black/70
-      rounded-[5px]
-      p-4
-      min-w-[150px]
-      text-white
-      text-[13px]
-  `
+        pointer-events-none fixed z-50
+        border border-point
+        bg-black/70
+        rounded-[5px]
+        p-4
+        min-w-[150px]
+      `
       )
       .style("opacity", 0);
 
@@ -155,7 +155,7 @@ export default function BubbleChartD3() {
     };
 
     /* ------------------ Bubbles ------------------ */
-    svg
+    root
       .selectAll("circle")
       .data(data)
       .enter()
@@ -165,13 +165,17 @@ export default function BubbleChartD3() {
       .attr("r", (d) => radius(d.marketCap))
       .attr("fill", (d) => COINS[d.symbol].color)
       .attr("opacity", (d) => getOpacity(d.symbol))
-      .on("mouseover", (event, d) => {
-        tooltip.style("opacity", 1).html(
-          `<strong>${d.symbol.toUpperCase()}</strong><br/>
-             Internal: ${d.internal}<br/>
-             External: ${d.external}<br/>
-             MarketCap: ${d.marketCap.toLocaleString()}`
-        );
+      .on("mouseover", (_, d) => {
+        tooltip.style("opacity", 1).html(`
+          <div>
+            <div class="font-chainname-bold mb-2">${d.symbol.toUpperCase()}</div>
+            <div class="space-y-1 font-body1-light">
+              <div>Internal: ${d.internal}</div>
+              <div>External: ${d.external}</div>
+              <div>MarketCap: ${d.marketCap.toLocaleString()}</div>
+            </div>
+          </div>
+        `);
       })
       .on("mousemove", (event) => {
         tooltip
@@ -181,7 +185,7 @@ export default function BubbleChartD3() {
       .on("mouseout", () => tooltip.style("opacity", 0));
 
     /* ------------------ Labels ------------------ */
-    svg
+    root
       .selectAll(".label")
       .data(data)
       .enter()

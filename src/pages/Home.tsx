@@ -23,7 +23,7 @@ export default function Home() {
       <div className="flex flex-col flex-1">
         <Header />
         <main className="overflow-y-auto scrollbar-custom">
-          <div className="grid grid-cols-[560px_710px] h-[560px] section-border-b">
+          <div className="grid grid-cols-[560px_710px] h-[590px] section-border-b">
             <div className="section-border-r flex justify-center items-center relative">
               <AnalyticsSection
                 title="Capital Flow"
