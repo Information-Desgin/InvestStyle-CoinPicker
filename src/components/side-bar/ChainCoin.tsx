@@ -134,7 +134,8 @@ function Bar({ color, width }: { color: string; width: number }) {
         rounded-br-full
         rounded-tl-none
         rounded-bl-none
-        transition-all"
+        transition-all
+        mr-[5px]"
       style={{ backgroundColor: color, width: `${Math.min(width, 100)}%` }}
     />
   );

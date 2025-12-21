@@ -5,7 +5,7 @@ import type { InvestStyle } from "../../types/chainCoinList";
 
 interface ChainCoinListProps {
   metrics?: Record<string, any>;
-  sort?: InvestStyle;
+  sort?: InvestStyle | "marketCap";
 }
 
 export default function ChainCoinList({
@@ -13,6 +13,12 @@ export default function ChainCoinList({
   sort = "stable",
 }: ChainCoinListProps) {
   const { selectedIds, toggle } = useSelectedCoins();
+
+  const dist = (internal: number, external: number, ax: number, ay: number) => {
+    const dx = internal - ax;
+    const dy = external - ay;
+    return dx * dx + dy * dy;
+  };
 
   const coinList = Object.entries(COINS)
     .map(([key, coin]) => {
@@ -25,7 +31,6 @@ export default function ChainCoinList({
         chain: coin.chain,
         coinImg: coin.image,
 
-        // raw summary (정렬 & tooltip 용)
         summary: m
           ? {
               marketCap: m.marketCapAvg,
@@ -35,7 +40,6 @@ export default function ChainCoinList({
             }
           : null,
 
-        // bar용 (0~100)
         stats: m
           ? {
               endo: m.internalAvg * 100,
@@ -55,16 +59,32 @@ export default function ChainCoinList({
           return B.marketCap - A.marketCap;
 
         case "stable":
-          return B.internal + B.external - (A.internal + A.external);
-
-        case "cautious":
-          return B.internal - B.external - (A.internal - A.external);
-
-        case "aggressive":
-          return A.internal + A.external - (B.internal + B.external);
+          // 우상단 (1,1)
+          return (
+            dist(A.internal, A.external, 1, 1) -
+            dist(B.internal, B.external, 1, 1)
+          );
 
         case "neutral":
-          return B.external - B.internal - (A.external - A.internal);
+          // 좌상단 (0,1)
+          return (
+            dist(A.internal, A.external, 0, 1) -
+            dist(B.internal, B.external, 0, 1)
+          );
+
+        case "cautious":
+          // 우하단 (1,0)
+          return (
+            dist(A.internal, A.external, 1, 0) -
+            dist(B.internal, B.external, 1, 0)
+          );
+
+        case "aggressive":
+          // 좌하단 (0,0)
+          return (
+            dist(A.internal, A.external, 0, 0) -
+            dist(B.internal, B.external, 0, 0)
+          );
 
         default:
           return 0;

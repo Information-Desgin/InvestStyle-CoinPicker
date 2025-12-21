@@ -3,14 +3,30 @@ import ChainCoinList from "./ChainCoinList";
 import type { InvestStyle } from "../../types/chainCoinList";
 import InvestStyleSelector from "./InvestStyleFilter";
 import MetricLabel from "./MetricLabel";
-import type { AnalyticsSummary } from "../../store/useAnalyticsSummary";
+
+export interface AnalyticsSummary {
+  /** 코인 ID (name) */
+  coinId: string;
+
+  /** Internal Stability 평균 (0 ~ 1) */
+  internalAvg: number;
+
+  /** External Stability 평균 (0 ~ 1) */
+  externalAvg: number;
+
+  /** Netflow 평균 (-1 ~ 1) */
+  netflowAvg: number;
+
+  /** Market Capitalization 평균 (raw value) */
+  marketCapAvg: number;
+}
 
 interface SideBarProps {
   analyticsSummaries: Record<string, AnalyticsSummary>;
 }
 
 export default function SideBar({ analyticsSummaries }: SideBarProps) {
-  const [style, setStyle] = useState<InvestStyle>("marketCap");
+  const [style, setStyle] = useState<InvestStyle>("stable");
 
   return (
     <aside className="min-w-[230px] section-border-r overflow-y-auto h-full flex flex-col pt-[30px] scrollbar-custom">

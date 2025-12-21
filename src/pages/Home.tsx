@@ -28,7 +28,7 @@ import { calcInternalStability } from "../utils/internal/calcInternalStability";
 import { CHAIN_TO_COIN_ID } from "../utils/coinMap";
 import { adaptBaseInfoForInternalStability } from "../utils/internal/internalStabilityAdapter";
 import { buildExternalStabilitySeries } from "../utils/externalStability";
-import { mean } from "../utils/stats";
+import { COINS } from "../data/coins";
 
 const windowMap = {
   "4 days": 4,
@@ -169,6 +169,28 @@ export default function Home() {
       });
   }, [filteredBaseInfo, selectedIds]);
 
+  const allInternalStabilityData = useMemo(() => {
+    const grouped = new Map<string, BaseInfoRow[]>();
+
+    filteredBaseInfo.forEach((row) => {
+      const coinId = CHAIN_TO_COIN_ID[row.chain.toLowerCase()];
+      if (!coinId) return;
+
+      if (!grouped.has(coinId)) grouped.set(coinId, []);
+      grouped.get(coinId)!.push(row);
+    });
+
+    return Array.from(grouped.entries()).map(([coinId, rows]) => {
+      const adapted = adaptBaseInfoForInternalStability(rows);
+      const scores = calcInternalStability(adapted);
+
+      return {
+        coin: coinId,
+        ...scores,
+      };
+    });
+  }, [filteredBaseInfo]);
+
   /* External Stability 데이터 생성
     1. filteredBaseInfo
     2. dailyAgg (이미 계산됨)
@@ -184,14 +206,18 @@ export default function Home() {
     ).filter((s) => selectedIds.includes(s.id));
   }, [filteredBaseInfo, dailyAgg, windowSize, selectedIds]);
 
+  const allExternalStabilitySeries = useMemo(() => {
+    const window = windowMap[windowSize] as 2 | 4 | 7;
+
+    return buildExternalStabilitySeries(filteredBaseInfo, dailyAgg, window);
+  }, [filteredBaseInfo, dailyAgg, windowSize]);
+
   const analyticsSummaries = useMemo(() => {
     const summaries: Record<string, AnalyticsSummary> = {};
 
-    selectedIds.forEach((coinId) => {
-      /* -----------------------------
-       1. Internal Stability 평균
-    ----------------------------- */
-      const internal = internalStabilityData.find((d) => d.coin === coinId);
+    Object.keys(COINS).forEach((coinId) => {
+      /* Internal */
+      const internal = allInternalStabilityData.find((d) => d.coin === coinId);
       const internalAvg = internal
         ? (internal.price +
             internal.onchain +
@@ -201,26 +227,19 @@ export default function Home() {
           5
         : 0;
 
-      /* -----------------------------
-       2. External Stability 평균
-    ----------------------------- */
-      const external = externalStabilitySeries.find((s) => s.id === coinId);
-
+      /* External */
+      const external = allExternalStabilitySeries.find((s) => s.id === coinId);
       const externalAvg =
-        external && external.points.length > 0
-          ? external.points.reduce((sum, p) => sum + (p.value ?? 0), 0) /
+        external && external.points.length
+          ? external.points.reduce((a, b) => a + (b.value ?? 0), 0) /
             external.points.length
           : 0;
 
-      /* -----------------------------
-       3. NetFlow 평균
-    ----------------------------- */
+      /* Netflow */
       const netflow = netFlowBoxData.find((n) => n.group === coinId);
       const netflowAvg = netflow?.value ?? 0;
 
-      /* -----------------------------
-       4. MarketCap 평균
-    ----------------------------- */
+      /* MarketCap */
       const marketCaps = filteredBaseInfo
         .filter((r) => CHAIN_TO_COIN_ID[r.chain.toLowerCase()] === coinId)
         .map((r) => r.marketCap)
@@ -231,9 +250,6 @@ export default function Home() {
           ? marketCaps.reduce((a, b) => a + b, 0) / marketCaps.length
           : 0;
 
-      /* -----------------------------
-       5. Summary 저장
-    ----------------------------- */
       summaries[coinId] = {
         internalAvg,
         externalAvg,
@@ -244,9 +260,8 @@ export default function Home() {
 
     return summaries;
   }, [
-    selectedIds,
-    internalStabilityData,
-    externalStabilitySeries,
+    allInternalStabilityData,
+    allExternalStabilitySeries,
     netFlowBoxData,
     filteredBaseInfo,
   ]);
