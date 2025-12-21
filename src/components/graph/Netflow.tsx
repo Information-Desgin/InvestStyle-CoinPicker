@@ -25,7 +25,7 @@ export default function NetFlow({ data }: NetFlowProps) {
   if (filteredData.length === 0) {
     return (
       <div className="flex h-[300px] items-center justify-center text-sm text-neutral-400">
-        코인을 선택하면 자금 유입/유출 분포가 표시됩니다.
+        Select a coin to view Netflow.
       </div>
     );
   }

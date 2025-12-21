@@ -24,6 +24,9 @@ import {
   buildNetFlowPoints,
   normalizeDailyNetFlow,
 } from "../utils/netflow";
+import { calcInternalStability } from "../utils/internal/calcInternalStability";
+import { CHAIN_TO_COIN_ID } from "../utils/coinMap";
+import { adaptBaseInfoForInternalStability } from "../utils/internal/internalStabilityAdapter";
 
 export default function Home() {
   const [flow, setFlow] = useState<("Inflow" | "Outflow")[]>([
@@ -112,8 +115,38 @@ export default function Home() {
     () => buildNetFlowPoints(normalizedNetFlow),
     [normalizedNetFlow]
   );
-  console.log("netflow (first 5)", normalizedNetFlow.slice(0, 5));
-  console.log("netFlowBoxData", netFlowBoxData);
+  // console.log("netflow (first 5)", normalizedNetFlow.slice(0, 5));
+  // console.log("netFlowBoxData", netFlowBoxData);
+
+  /* Internal Stability 데이터 생성
+  1. baseInfo 데이터를 코인별로 그룹화
+  2. 선택된 코인에 해당하는 데이터만 필터링
+  3. calcInternalStability 함수로 Internal Stability 계산
+  4. InternalStability 컴포넌트에 전달
+  */
+  const internalStabilityData = useMemo(() => {
+    const grouped = new Map<string, BaseInfoRow[]>();
+
+    filteredBaseInfo.forEach((row) => {
+      const coinId = CHAIN_TO_COIN_ID[row.chain.toLowerCase()];
+      if (!coinId) return;
+
+      if (!grouped.has(coinId)) grouped.set(coinId, []);
+      grouped.get(coinId)!.push(row);
+    });
+
+    return Array.from(grouped.entries())
+      .filter(([coinId]) => selectedIds.includes(coinId))
+      .map(([coinId, rows]) => {
+        const adapted = adaptBaseInfoForInternalStability(rows);
+        const scores = calcInternalStability(adapted);
+
+        return {
+          coin: coinId,
+          ...scores,
+        };
+      });
+  }, [filteredBaseInfo, selectedIds]);
 
   return (
     <div className="flex h-dvh">
@@ -163,7 +196,7 @@ export default function Home() {
                 title="Internal Stability"
                 description="Summarizes each token’s stability based on internal on-chain dynamics."
               >
-                <InternalStability />
+                <InternalStability data={internalStabilityData} />
               </AnalyticsSection>
             </div>
             <div>

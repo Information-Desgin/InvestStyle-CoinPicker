@@ -1,11 +1,9 @@
 import { ResponsiveBar } from "@nivo/bar";
-import { useMemo } from "react";
 import * as d3 from "d3";
-import { useSelectedCoins } from "../../store/useSelectedCoins";
 import { COINS } from "../../data/coins";
-import { generateDummyInternalStability } from "../../data/mockInternalStability";
 import { TooltipContainer } from "../interaction/tooltip/ToolTipContainer";
 import { TooltipRow } from "../interaction/tooltip/ToolTipRow";
+import type { InternalStabilityBarItem } from "../../types/internalStability";
 
 /* 내부 안정성 지표 */
 const KEYS = ["onchain", "active", "staking", "price", "validator"] as const;
@@ -35,18 +33,22 @@ function applyLightness(hex: string, lightness: number) {
   return hsl.toString();
 }
 
-export default function InternalStability() {
-  const { selectedIds } = useSelectedCoins();
+type InternalStabilityProps = {
+  data: InternalStabilityBarItem[];
+};
 
-  const data = useMemo(() => {
-    if (selectedIds.length === 0) return [];
-    return generateDummyInternalStability(selectedIds);
-  }, [selectedIds]);
+export default function InternalStability({ data }: InternalStabilityProps) {
+  // const { selectedIds } = useSelectedCoins();
+
+  // const data = useMemo(() => {
+  //   if (selectedIds.length === 0) return [];
+  //   return generateDummyInternalStability(selectedIds);
+  // }, [selectedIds]);
 
   if (data.length === 0) {
     return (
       <div className="flex h-[360px] items-center justify-center text-sm text-neutral-400">
-        코인을 선택하면 Internal Stability 구성이 표시됩니다.
+        Select a coin to view Internal Stability.
       </div>
     );
   }
@@ -71,6 +73,7 @@ export default function InternalStability() {
         axisBottom={{
           tickSize: 0,
           tickPadding: 10,
+          format: (value) => String(value).toUpperCase(),
         }}
         axisLeft={{
           tickValues: 5,

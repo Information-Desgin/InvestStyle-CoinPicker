@@ -36,7 +36,7 @@ export default function ExternalStability() {
   if (chartData.length === 0) {
     return (
       <div className="flex h-[320px] items-center justify-center text-sm text-neutral-400">
-        코인을 선택하면 외부 안정성 추세가 표시됩니다.
+        Select a coin to view External Stability.
       </div>
     );
   }
