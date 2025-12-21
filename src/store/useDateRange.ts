@@ -8,8 +8,8 @@ type DateRangeState = {
 };
 
 export const useDateRange = create<DateRangeState>((set) => ({
-  startDate: new Date("2024-09-20"),
-  endDate: new Date("2024-12-20"),
+  startDate: new Date("2025-09-01"),
+  endDate: new Date("2025-12-01"),
   setDateRange: (start, end) =>
     set({
       startDate: start,
