@@ -1,4 +1,8 @@
 import clsx from "clsx";
+import { useState } from "react";
+import { TooltipRow } from "../interaction/tooltip/ToolTipRow";
+import { TooltipContainer } from "../interaction/tooltip/ToolTipContainer";
+import { TooltipPortal } from "../interaction/tooltip/TooltipPortal";
 
 type ChainCoinProps = {
   name: string;
@@ -8,9 +12,15 @@ type ChainCoinProps = {
   isSelected: boolean;
   onClick?: () => void;
   stats?: {
-    endo: number;
-    exter: number;
-    netflow: number;
+    endo: number; // 0~100
+    exter: number; // 0~100
+    netflow: number; // 0~100
+  };
+  summary?: {
+    marketCap: number;
+    internal: number; // 0~1
+    external: number; // 0~1
+    netflow: number; // -1~1
   };
 };
 
@@ -22,10 +32,17 @@ export default function ChainCoin({
   isSelected,
   onClick,
   stats,
+  summary,
 }: ChainCoinProps) {
+  const [hover, setHover] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
   return (
     <button
       onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
       className={clsx(
         "w-full flex items-center justify-between transition-all cursor-pointer pl-[22px] py-[6px] relative",
         isSelected && "bg-box-clicked"
@@ -36,17 +53,13 @@ export default function ChainCoin({
         {/* 왼쪽 컬러바 */}
         {isSelected && (
           <div
-            className="absolute h-full w-[5px] left-0 top-0 bg-point"
+            className="absolute h-full w-[5px] left-0 top-0"
             style={{ backgroundColor: color }}
           />
         )}
 
         {/* 코인 이미지 */}
-        <div
-          className={clsx(
-            "w-[26px] h-[26px] rounded-full overflow-hidden flex-shrink-0"
-          )}
-        >
+        <div className="w-[26px] h-[26px] rounded-full overflow-hidden flex-shrink-0">
           <img
             src={coinImg}
             alt={name}
@@ -57,33 +70,67 @@ export default function ChainCoin({
         {/* 텍스트 */}
         <div className="flex flex-col overflow-hidden">
           <span className="font-chainname-bold truncate">{name}</span>
-          <span
-            className={clsx(
-              "font-body1-light mt-[1px] self-start text-sub-text"
-            )}
-          >
+          <span className="font-body1-light mt-[1px] self-start text-sub-text">
             {coin}
           </span>
         </div>
       </div>
 
-      {/* RIGHT */}
+      {/* RIGHT : 선택된 경우 Bar */}
       {isSelected && stats && (
         <div className="flex flex-col gap-[5px] w-[60px] ml-[6px]">
-          <Bar color="#7ce0c9" width={stats.endo} />
-          <Bar color="#ffc85c" width={stats.exter} />
-          <Bar color="#ff717e" width={stats.netflow} />
+          <Bar color="#69DDD1" width={stats.endo} />
+          <Bar color="#FFEE00" width={stats.exter} />
+          <Bar color="#FF00B2" width={stats.netflow} />
         </div>
+      )}
+
+      {/* TOOLTIP */}
+      {hover && summary && (
+        <TooltipPortal>
+          <div
+            className="fixed z-[9999] pointer-events-none"
+            style={{
+              left: mousePos.x + 16,
+              top: mousePos.y + 16,
+            }}
+          >
+            <TooltipContainer title={name}>
+              <TooltipRow
+                dotColor="#4A62A0"
+                label="Market Cap"
+                value={`$ ${Math.round(summary.marketCap).toLocaleString()}`}
+              />
+              <TooltipRow
+                dotColor="#69DDD1"
+                label="Internal Stability"
+                value={summary.internal.toFixed(2)}
+              />
+              <TooltipRow
+                dotColor="#FFEE00"
+                label="External Stability"
+                value={summary.external.toFixed(2)}
+              />
+              <TooltipRow
+                dotColor="#FF00B2"
+                label="Netflow"
+                value={summary.netflow.toFixed(2)}
+              />
+            </TooltipContainer>
+          </div>
+        </TooltipPortal>
       )}
     </button>
   );
 }
 
+/* ---------- Sub Components ---------- */
+
 function Bar({ color, width }: { color: string; width: number }) {
   return (
     <div
-      className="h-[6px] rounded-full"
-      style={{ backgroundColor: color, width: `${width}%` }}
+      className="h-[4px] rounded-full transition-all"
+      style={{ backgroundColor: color, width: `${Math.min(width, 100)}%` }}
     />
   );
 }

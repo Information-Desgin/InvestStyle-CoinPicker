@@ -28,12 +28,20 @@ import { calcInternalStability } from "../utils/internal/calcInternalStability";
 import { CHAIN_TO_COIN_ID } from "../utils/coinMap";
 import { adaptBaseInfoForInternalStability } from "../utils/internal/internalStabilityAdapter";
 import { buildExternalStabilitySeries } from "../utils/externalStability";
+import { mean } from "../utils/stats";
 
 const windowMap = {
   "4 days": 4,
   "7 days": 7,
   "9 days": 9,
 };
+
+interface AnalyticsSummary {
+  internalAvg: number;
+  externalAvg: number;
+  netflowAvg: number;
+  marketCapAvg: number;
+}
 
 export default function Home() {
   // 선택된 기간 (Date | null)
@@ -176,9 +184,81 @@ export default function Home() {
     ).filter((s) => selectedIds.includes(s.id));
   }, [filteredBaseInfo, dailyAgg, windowSize, selectedIds]);
 
+  const analyticsSummaries = useMemo(() => {
+    const summaries: Record<string, AnalyticsSummary> = {};
+
+    selectedIds.forEach((coinId) => {
+      /* -----------------------------
+       1. Internal Stability 평균
+    ----------------------------- */
+      const internal = internalStabilityData.find((d) => d.coin === coinId);
+      const internalAvg = internal
+        ? (internal.price +
+            internal.onchain +
+            internal.staking +
+            internal.active +
+            internal.validator) /
+          5
+        : 0;
+
+      /* -----------------------------
+       2. External Stability 평균
+    ----------------------------- */
+      const external = externalStabilitySeries.find((s) => s.id === coinId);
+
+      const externalAvg =
+        external && external.points.length > 0
+          ? external.points.reduce((sum, p) => sum + (p.value ?? 0), 0) /
+            external.points.length
+          : 0;
+
+      /* -----------------------------
+       3. NetFlow 평균
+    ----------------------------- */
+      const netflow = netFlowBoxData.find((n) => n.group === coinId);
+      const netflowAvg = netflow?.value ?? 0;
+
+      /* -----------------------------
+       4. MarketCap 평균
+    ----------------------------- */
+      const marketCaps = filteredBaseInfo
+        .filter((r) => CHAIN_TO_COIN_ID[r.chain.toLowerCase()] === coinId)
+        .map((r) => r.marketCap)
+        .filter((v): v is number => typeof v === "number");
+
+      const marketCapAvg =
+        marketCaps.length > 0
+          ? marketCaps.reduce((a, b) => a + b, 0) / marketCaps.length
+          : 0;
+
+      /* -----------------------------
+       5. Summary 저장
+    ----------------------------- */
+      summaries[coinId] = {
+        internalAvg,
+        externalAvg,
+        netflowAvg,
+        marketCapAvg,
+      };
+    });
+
+    return summaries;
+  }, [
+    selectedIds,
+    internalStabilityData,
+    externalStabilitySeries,
+    netFlowBoxData,
+    filteredBaseInfo,
+  ]);
+
+  // useEffect(() => {
+  //   console.log("analyticsSummaries", analyticsSummaries);
+  // }, [analyticsSummaries, selectedIds]);
+
   return (
     <div className="flex h-dvh">
-      <SideBar />
+      <SideBar analyticsSummaries={analyticsSummaries} />
+
       <div className="flex flex-col flex-1">
         <Header />
         <main className="overflow-y-auto scrollbar-custom">

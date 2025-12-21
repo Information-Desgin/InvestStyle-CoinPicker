@@ -3,8 +3,13 @@ import ChainCoinList from "./ChainCoinList";
 import type { InvestStyle } from "../../types/chainCoinList";
 import InvestStyleSelector from "./InvestStyleFilter";
 import MetricLabel from "./MetricLabel";
+import type { AnalyticsSummary } from "../../store/useAnalyticsSummary";
 
-export default function SideBar() {
+interface SideBarProps {
+  analyticsSummaries: Record<string, AnalyticsSummary>;
+}
+
+export default function SideBar({ analyticsSummaries }: SideBarProps) {
   const [style, setStyle] = useState<InvestStyle>("stable");
 
   return (
@@ -25,7 +30,7 @@ export default function SideBar() {
           <div className="font-element-light mt-[8px]">Chain–Coin List</div>
         </div>
 
-        {/* 지표 라벨  */}
+        {/* 지표 라벨 */}
         <div className="flex flex-col gap-[6px]">
           <div className="flex flex-col gap-[6px] mt-[10px]">
             <MetricLabel color="internal" text="Internal Stability" />
@@ -37,7 +42,7 @@ export default function SideBar() {
 
       {/* 체인 - 코인 리스트 */}
       <div className="mt-[30px]">
-        <ChainCoinList sort={style} />
+        <ChainCoinList sort={style} metrics={analyticsSummaries} />
       </div>
     </aside>
   );
