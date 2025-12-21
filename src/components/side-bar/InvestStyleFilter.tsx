@@ -1,6 +1,4 @@
-"use client";
-
-type InvestStyle = "aggressive" | "stable" | "cautious" | "neutral";
+import type { InvestStyle } from "../../types/chainCoinList";
 
 export default function InvestStyleSelector({
   value,
@@ -9,36 +7,45 @@ export default function InvestStyleSelector({
   value: InvestStyle;
   onChange: (v: InvestStyle) => void;
 }) {
+  const handleClick = (next: InvestStyle) => {
+    // 같은 사분면 다시 클릭 → marketCap
+    if (value === next) {
+      onChange("marketCap");
+    } else {
+      onChange(next);
+    }
+  };
+
   return (
     <div className="relative w-full h-[100px] text-white">
       {/* 십자 구분선 */}
-      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-point"></div>
-      <div className="absolute top-0 left-1/2 h-full w-[1px] bg-point"></div>
+      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-point" />
+      <div className="absolute top-0 left-1/2 h-full w-[1px] bg-point" />
 
-      {/* 그리드 */}
+      {/* 사분면 */}
       <div className="grid grid-cols-2 grid-rows-2 w-full h-full">
         <Quadrant
           label="Neutral"
           active={value === "neutral"}
-          onClick={() => onChange("neutral")}
+          onClick={() => handleClick("neutral")}
           position="top-left"
         />
         <Quadrant
           label="Stable"
           active={value === "stable"}
-          onClick={() => onChange("stable")}
+          onClick={() => handleClick("stable")}
           position="top-right"
         />
         <Quadrant
           label="Aggressive"
           active={value === "aggressive"}
-          onClick={() => onChange("aggressive")}
+          onClick={() => handleClick("aggressive")}
           position="bottom-left"
         />
         <Quadrant
           label="Cautious"
           active={value === "cautious"}
-          onClick={() => onChange("cautious")}
+          onClick={() => handleClick("cautious")}
           position="bottom-right"
         />
       </div>

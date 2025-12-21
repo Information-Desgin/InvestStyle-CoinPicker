@@ -129,7 +129,12 @@ export default function ChainCoin({
 function Bar({ color, width }: { color: string; width: number }) {
   return (
     <div
-      className="h-[4px] rounded-full transition-all"
+      className="h-[4px]         
+        rounded-tr-full
+        rounded-br-full
+        rounded-tl-none
+        rounded-bl-none
+        transition-all"
       style={{ backgroundColor: color, width: `${Math.min(width, 100)}%` }}
     />
   );

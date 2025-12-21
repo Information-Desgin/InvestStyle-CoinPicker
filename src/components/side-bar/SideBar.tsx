@@ -10,7 +10,7 @@ interface SideBarProps {
 }
 
 export default function SideBar({ analyticsSummaries }: SideBarProps) {
-  const [style, setStyle] = useState<InvestStyle>("stable");
+  const [style, setStyle] = useState<InvestStyle>("marketCap");
 
   return (
     <aside className="min-w-[230px] section-border-r overflow-y-auto h-full flex flex-col pt-[30px] scrollbar-custom">
