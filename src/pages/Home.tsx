@@ -27,12 +27,15 @@ import {
 import { calcInternalStability } from "../utils/internal/calcInternalStability";
 import { CHAIN_TO_COIN_ID } from "../utils/coinMap";
 import { adaptBaseInfoForInternalStability } from "../utils/internal/internalStabilityAdapter";
+import { buildExternalStabilitySeries } from "../utils/externalStability";
+
+const windowMap = {
+  "4 days": 4,
+  "7 days": 7,
+  "9 days": 9,
+};
 
 export default function Home() {
-  const [flow, setFlow] = useState<("Inflow" | "Outflow")[]>([
-    "Outflow",
-    "Inflow",
-  ]);
   // 선택된 기간 (Date | null)
   const { startDate, endDate } = useDateRange();
 
@@ -55,7 +58,17 @@ export default function Home() {
   const { selectedIds } = useSelectedCoins();
   const showFlowToggle = selectedIds.length === 1;
 
-  // 데이터 상태
+  // Chord Diagram - 선택된 흐름 (Inflow / Outflow)
+  const [flow, setFlow] = useState<("Inflow" | "Outflow")[]>([
+    "Outflow",
+    "Inflow",
+  ]);
+  // External Stability - 선택된 일수 (rolling window)
+  const [windowSize, setWindowSize] = useState<"4 days" | "7 days" | "9 days">(
+    "4 days"
+  );
+
+  // 데이터 state
   const [baseInfo, setBaseInfo] = useState<BaseInfoRow[]>([]);
   const [flows, setFlows] = useState<RelayerFlowRow[]>([]);
 
@@ -148,6 +161,21 @@ export default function Home() {
       });
   }, [filteredBaseInfo, selectedIds]);
 
+  /* External Stability 데이터 생성
+    1. filteredBaseInfo
+    2. dailyAgg (이미 계산됨)
+    3. rolling window 적용
+    */
+  const externalStabilitySeries = useMemo(() => {
+    const window = windowMap[windowSize] as 2 | 4 | 7;
+
+    return buildExternalStabilitySeries(
+      filteredBaseInfo,
+      dailyAgg,
+      window
+    ).filter((s) => selectedIds.includes(s.id));
+  }, [filteredBaseInfo, dailyAgg, windowSize, selectedIds]);
+
   return (
     <div className="flex h-dvh">
       <SideBar />
@@ -182,13 +210,18 @@ export default function Home() {
               </AnalyticsSection>
             </div>
           </div>
-          <div className="section-border-b h-[440px]">
+          <div className="section-border-b h-[440px] relative">
             <AnalyticsSection
               title="External Stability"
               description="Illustrates how each token’s price responds to external capital flows over time."
             >
-              <ExternalStability />
+              <ExternalStability data={externalStabilitySeries} />
             </AnalyticsSection>
+            <ToggleBtn
+              options={["4 days", "7 days", "9 days"] as const}
+              value={windowSize}
+              onChange={setWindowSize}
+            />
           </div>
           <div className="grid grid-cols-[670px_600px] h-[400px]">
             <div className="section-border-r">

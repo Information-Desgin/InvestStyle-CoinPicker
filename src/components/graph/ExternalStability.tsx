@@ -1,39 +1,50 @@
-import { ResponsiveLine } from "@nivo/line";
-import { useMemo, useRef, useState } from "react";
+import { ResponsiveLine, type LineSeries } from "@nivo/line";
+import { useRef, useState } from "react";
 import { timeFormat } from "d3-time-format";
-import { useSelectedCoins } from "../../store/useSelectedCoins";
-import { COINS } from "../../data/coins";
-import { generateDummyExternalStability } from "../../data/mockExternalStability";
 import { TooltipContainer } from "../interaction/tooltip/ToolTipContainer";
 import { TooltipRow } from "../interaction/tooltip/ToolTipRow";
+import type { ExternalStabilitySeries } from "../../types/externalStability";
 
-export default function ExternalStability() {
-  const { selectedIds } = useSelectedCoins();
+type ExternalStabilityProps = {
+  data: ExternalStabilitySeries[];
+};
+
+export default function ExternalStability({ data }: ExternalStabilityProps) {
+  // const { selectedIds } = useSelectedCoins();
   const chartRef = useRef<HTMLDivElement>(null);
   const [hoverX, setHoverX] = useState<number | null>(null);
 
-  const chartData = useMemo(() => {
-    if (selectedIds.length === 0) return [];
+  // const chartData = useMemo(() => {
+  //   if (selectedIds.length === 0) return [];
 
-    const dummy = generateDummyExternalStability(
-      selectedIds.map((id) => ({
-        id,
-        color: COINS[id].color,
-      }))
-    );
+  //   const dummy = generateDummyExternalStability(
+  //     selectedIds.map((id) => ({
+  //       id,
+  //       color: COINS[id].color,
+  //     }))
+  //   );
 
-    return dummy.map((coin) => ({
-      id: coin.id,
-      color: coin.color,
-      data: coin.values.map((d) => ({
-        x: new Date(d.timestamp),
-        y: d.value,
-        actual: d.value,
-      })),
-    }));
-  }, [selectedIds]);
+  //   return dummy.map((coin) => ({
+  //     id: coin.id,
+  //     color: coin.color,
+  //     data: coin.values.map((d) => ({
+  //       x: new Date(d.timestamp),
+  //       y: d.value,
+  //       actual: d.value,
+  //     })),
+  //   }));
+  // }, [selectedIds]);
+  const chartData: LineSeries[] = data.map((series) => ({
+    id: series.id,
+    color: series.color,
+    data: series.points.map((p) => ({
+      x: new Date(p.date),
+      y: p.value,
+      actual: p.value,
+    })),
+  }));
 
-  if (chartData.length === 0) {
+  if (data.length === 0) {
     return (
       <div className="flex h-[320px] items-center justify-center text-sm text-neutral-400">
         Select a coin to view External Stability.
@@ -49,8 +60,8 @@ export default function ExternalStability() {
         xScale={{ type: "time", format: "native", precision: "day" }}
         yScale={{ type: "linear", min: 0, max: 1 }}
         axisBottom={{
-          format: "%Y.%m",
-          tickValues: "every 2 months",
+          format: "%Y.%m.%d",
+          tickValues: "every day",
         }}
         axisLeft={{ tickValues: 5 }}
         curve="monotoneX"
