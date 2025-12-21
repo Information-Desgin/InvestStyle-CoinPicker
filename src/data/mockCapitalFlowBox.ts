@@ -1,6 +1,6 @@
 export type CapitalFlowBox = {
   group: string;
-  value: number;
+  values: number;
 };
 
 export function generateDummyCapitalFlowBox(
@@ -13,7 +13,7 @@ export function generateDummyCapitalFlowBox(
     for (let i = 0; i < sampleCount; i++) {
       result.push({
         group: coin,
-        value: Number((Math.random() * 2 - 1).toFixed(2)), // -1 ~ 1
+        values: Number((Math.random() * 2 - 1).toFixed(2)), // -1 ~ 1
       });
     }
   });

@@ -1,23 +1,28 @@
-import { ResponsiveBoxPlot } from "@nivo/boxplot";
+import { ResponsiveBoxPlot, type BoxPlotDatum } from "@nivo/boxplot";
 import { useMemo } from "react";
 import { useSelectedCoins } from "../../store/useSelectedCoins";
 import { COINS } from "../../data/coins";
-import {
-  generateDummyCapitalFlowBox,
-  type CapitalFlowBox,
-} from "../../data/mockCapitalFlowBox";
 import { TooltipContainer } from "../interaction/tooltip/ToolTipContainer";
 import { TooltipRow } from "../interaction/tooltip/ToolTipRow";
+import type { CapitalFlowPoint } from "../../types/netflow";
+type NetFlowProps = {
+  data: CapitalFlowPoint[];
+};
 
-export default function NetFlow() {
+export default function NetFlow({ data }: NetFlowProps) {
   const { selectedIds } = useSelectedCoins();
 
-  const data: CapitalFlowBox[] = useMemo(() => {
-    if (selectedIds.length === 0) return [];
-    return generateDummyCapitalFlowBox(selectedIds);
-  }, [selectedIds]);
+  // const data: CapitalFlowBox[] = useMemo(() => {
+  //   if (selectedIds.length === 0) return [];
+  //   return generateDummyCapitalFlowBox(selectedIds);
+  // }, [selectedIds]);
 
-  if (data.length === 0) {
+  const filteredData = useMemo(() => {
+    if (selectedIds.length === 0) return [];
+    return data.filter((d) => selectedIds.includes(d.group));
+  }, [data, selectedIds]);
+  console.log("NetFlow data", filteredData);
+  if (filteredData.length === 0) {
     return (
       <div className="flex h-[300px] items-center justify-center text-sm text-neutral-400">
         코인을 선택하면 자금 유입/유출 분포가 표시됩니다.
@@ -29,7 +34,7 @@ export default function NetFlow() {
     <div className="w-full h-[300px] pt-4">
       <ResponsiveBoxPlot
         // layout="horizontal"
-        data={data}
+        data={filteredData as unknown as BoxPlotDatum[]}
         margin={{ top: 20, right: 40, bottom: 40, left: 50 }}
         minValue={-1}
         maxValue={1}
@@ -51,6 +56,7 @@ export default function NetFlow() {
         axisBottom={{
           legend: "Coin",
           legendOffset: 32,
+          format: (v) => v.toUpperCase(),
         }}
         axisLeft={{
           tickValues: 5,

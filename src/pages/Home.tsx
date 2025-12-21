@@ -19,6 +19,11 @@ import {
   RELAYER_FLOW_DEFAULT_RANGE,
 } from "../constants/dateRange";
 import { toLocalDateString } from "../utils/toLocalDateString";
+import {
+  aggregateDailyFlows,
+  buildNetFlowPoints,
+  normalizeDailyNetFlow,
+} from "../utils/netflow";
 
 export default function Home() {
   const [flow, setFlow] = useState<("Inflow" | "Outflow")[]>([
@@ -88,6 +93,28 @@ export default function Home() {
     console.log("filteredFlows (first 5)", filteredFlows.slice(0, 5));
   }, [filteredBaseInfo, filteredFlows]);
 
+  /*
+  NetFlowBox 데이터 생성
+  1. 일별 집계
+  2. 정규화
+  3. NetFlowBox 데이터 생성
+  4. NetFlow 컴포넌트에 전달
+  */
+  const dailyAgg = useMemo(
+    () => aggregateDailyFlows(filteredFlows),
+    [filteredFlows]
+  );
+  const normalizedNetFlow = useMemo(
+    () => normalizeDailyNetFlow(dailyAgg),
+    [dailyAgg]
+  );
+  const netFlowBoxData = useMemo(
+    () => buildNetFlowPoints(normalizedNetFlow),
+    [normalizedNetFlow]
+  );
+  console.log("netflow (first 5)", normalizedNetFlow.slice(0, 5));
+  console.log("netFlowBoxData", netFlowBoxData);
+
   return (
     <div className="flex h-dvh">
       <SideBar />
@@ -144,7 +171,7 @@ export default function Home() {
                 title="Capital Inflow and Outflow"
                 description="Highlights the distribution of net capital inflows and outflows over time."
               >
-                <NetFlow />
+                <NetFlow data={netFlowBoxData} />
               </AnalyticsSection>
             </div>
           </div>
