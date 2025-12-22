@@ -4,6 +4,8 @@ import { timeFormat } from "d3-time-format";
 import { TooltipContainer } from "../interaction/tooltip/ToolTipContainer";
 import { TooltipRow } from "../interaction/tooltip/ToolTipRow";
 import type { ExternalStabilitySeries } from "../../types/externalStability";
+import { useDateRange } from "../../store/useDateRange";
+import { toLocalDateString } from "../../utils/toLocalDateString";
 
 type ExternalStabilityProps = {
   data: ExternalStabilitySeries[];
@@ -14,6 +16,12 @@ export default function ExternalStability({ data }: ExternalStabilityProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   const [hoverX, setHoverX] = useState<number | null>(null);
 
+  // 선택된 기간 (Date | null)
+  const { startDate, endDate } = useDateRange();
+
+  // Date → string 변환
+  const startDateStr = startDate ? toLocalDateString(startDate) : null;
+  const endDateStr = endDate ? toLocalDateString(endDate) : null;
   // const chartData = useMemo(() => {
   //   if (selectedIds.length === 0) return [];
 
@@ -57,7 +65,17 @@ export default function ExternalStability({ data }: ExternalStabilityProps) {
       <ResponsiveLine
         data={chartData}
         margin={{ top: 20, right: 30, bottom: 40, left: 40 }}
-        xScale={{ type: "time", format: "native", precision: "day" }}
+        xScale={{
+          type: "time",
+          format: "native",
+          precision: "day",
+          ...(startDateStr && endDateStr
+            ? {
+                min: new Date(`${startDateStr}`),
+                max: new Date(`${endDateStr}`),
+              }
+            : {}),
+        }}
         yScale={{ type: "linear", min: 0, max: 1 }}
         axisBottom={{
           format: "%Y.%m.%d",

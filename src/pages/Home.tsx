@@ -223,7 +223,7 @@ export default function Home() {
       dailyAgg,
       window
     );
-  }, [extendedBaseInfoForExternal, dailyAgg, windowSize, selectedIds]);
+  }, [extendedBaseInfoForExternal, dailyAgg, windowSize]);
 
   const externalStabilitySeries = useMemo(() => {
     if (!startDateStr || !endDateStr) return [];
