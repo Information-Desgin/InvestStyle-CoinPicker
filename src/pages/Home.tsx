@@ -29,6 +29,7 @@ import { CHAIN_TO_COIN_ID } from "../utils/coinMap";
 import { adaptBaseInfoForInternalStability } from "../utils/internal/internalStabilityAdapter";
 import { buildExternalStabilitySeries } from "../utils/externalStability";
 import { COINS } from "../data/coins";
+import { buildRealFlows } from "../utils/buildRealFlow";
 
 const windowMap = {
   "4 days": 4,
@@ -266,6 +267,10 @@ export default function Home() {
     filteredBaseInfo,
   ]);
 
+  const realFlows = useMemo(() => {
+    return buildRealFlows(filteredFlows);
+  }, [filteredFlows]);
+
   // useEffect(() => {
   //   console.log("analyticsSummaries", analyticsSummaries);
   // }, [analyticsSummaries, selectedIds]);
@@ -284,7 +289,10 @@ export default function Home() {
                 subtitle="[Overview]"
                 description="Illustrates how capital flows between chains and tokens across the ecosystem."
               >
-                <ChordDiagram flow={showFlowToggle ? flow : undefined} />
+                <ChordDiagram
+                  flow={showFlowToggle ? flow : undefined}
+                  flows={realFlows}
+                />
               </AnalyticsSection>
               {showFlowToggle && (
                 <ToggleBtn
