@@ -22,7 +22,9 @@ export function AnalyticsSection({
             {title}
           </div>
           {description && (
-            <div className="break-all font-element-light">{description}</div>
+            <div className="break-all font-element-light text-sub-text">
+              {description}
+            </div>
           )}
         </div>
         {togglebtns}

@@ -31,7 +31,10 @@ export default function SideBar({ analyticsSummaries }: SideBarProps) {
   return (
     <aside className="min-w-[230px] section-border-r overflow-y-auto h-full flex flex-col pt-[30px] scrollbar-custom">
       <div className="px-[27px]">
-        <div className="font-subtitle mb-[25px]">Filter</div>
+        <div className="font-subtitle">Filter</div>
+        <div className="font-element-light text-sub-text pt-[10px] pb-[15px]">
+          Filters tokens by investment style.
+        </div>
 
         {/* 투자 성향 필터 */}
         <InvestStyleSelector value={style} onChange={setStyle} />

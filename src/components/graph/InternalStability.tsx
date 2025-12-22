@@ -112,10 +112,11 @@ export default function InternalStability({ data }: InternalStabilityProps) {
             dataFrom: "keys",
             anchor: "bottom-right",
             direction: "column",
-            translateX: 160,
+            translateX: 210,
             itemWidth: 160,
             itemHeight: 18,
             symbolSize: 12,
+
             symbolShape: "square",
             itemTextColor: "#d1d5db",
             data: KEYS.map((k) => ({

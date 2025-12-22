@@ -84,12 +84,16 @@ function Quadrant({
       : "border-b border-r border-point"
     : "";
 
+  const fontStyle = active
+    ? "font-element-light font-[var(--font-weight-medium)]"
+    : "font-element-light";
+
   const activeBg = active ? "bg-box-clicked" : "";
 
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center ${radius} ${activeBorders} ${activeBg} font-element-light cursor-pointer`}
+      className={`flex items-center justify-center ${radius} ${activeBorders} ${activeBg} ${fontStyle} cursor-pointer`}
     >
       {label}
     </button>
