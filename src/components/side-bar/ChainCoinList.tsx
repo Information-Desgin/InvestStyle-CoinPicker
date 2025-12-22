@@ -8,17 +8,35 @@ interface ChainCoinListProps {
   sort?: InvestStyle | "marketCap";
 }
 
+const amplify = (v: number, factor = 1.8) =>
+  Math.max(0, Math.min(100, 50 + (v - 50) * factor));
+
+const ANCHOR = {
+  stable: [100, 100],
+  neutral: [0, 100],
+  cautious: [100, 0],
+  aggressive: [0, 0],
+} as const;
+
+const score = (
+  internal01: number,
+  external01: number,
+  ax: number,
+  ay: number
+) => {
+  const internal = amplify(internal01 * 100);
+  const external = amplify(external01 * 100);
+
+  const dx = internal - ax;
+  const dy = external - ay;
+  return dx * dx + dy * dy;
+};
+
 export default function ChainCoinList({
   metrics = {},
   sort = "stable",
 }: ChainCoinListProps) {
   const { selectedIds, toggle } = useSelectedCoins();
-
-  const dist = (internal: number, external: number, ax: number, ay: number) => {
-    const dx = internal - ax;
-    const dy = external - ay;
-    return dx * dx + dy * dy;
-  };
 
   const coinList = Object.entries(COINS)
     .map(([key, coin]) => {
@@ -30,7 +48,6 @@ export default function ChainCoinList({
         coin: coin.symbol,
         chain: coin.chain,
         coinImg: coin.image,
-
         summary: m
           ? {
               marketCap: m.marketCapAvg,
@@ -39,7 +56,6 @@ export default function ChainCoinList({
               netflow: m.netflowAvg,
             }
           : null,
-
         stats: m
           ? {
               endo: m.internalAvg * 100,
@@ -54,41 +70,16 @@ export default function ChainCoinList({
       const B = b.summary;
       if (!A || !B) return 0;
 
-      switch (sort) {
-        case "marketCap":
-          return B.marketCap - A.marketCap;
-
-        case "stable":
-          // 우상단 (1,1)
-          return (
-            dist(A.internal, A.external, 1, 1) -
-            dist(B.internal, B.external, 1, 1)
-          );
-
-        case "neutral":
-          // 좌상단 (0,1)
-          return (
-            dist(A.internal, A.external, 0, 1) -
-            dist(B.internal, B.external, 0, 1)
-          );
-
-        case "cautious":
-          // 우하단 (1,0)
-          return (
-            dist(A.internal, A.external, 1, 0) -
-            dist(B.internal, B.external, 1, 0)
-          );
-
-        case "aggressive":
-          // 좌하단 (0,0)
-          return (
-            dist(A.internal, A.external, 0, 0) -
-            dist(B.internal, B.external, 0, 0)
-          );
-
-        default:
-          return 0;
+      if (sort === "marketCap") {
+        return B.marketCap - A.marketCap;
       }
+
+      const [ax, ay] = ANCHOR[sort];
+
+      return (
+        score(A.internal, A.external, ax, ay) -
+        score(B.internal, B.external, ax, ay)
+      );
     });
 
   return (
