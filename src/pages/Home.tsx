@@ -27,7 +27,10 @@ import {
 import { calcInternalStability } from "../utils/internal/calcInternalStability";
 import { CHAIN_TO_COIN_ID } from "../utils/coinMap";
 import { adaptBaseInfoForInternalStability } from "../utils/internal/internalStabilityAdapter";
-import { buildExternalStabilitySeries } from "../utils/externalStability";
+import {
+  buildExternalStabilitySeries,
+  extendRangeForRolling,
+} from "../utils/externalStability";
 import { COINS } from "../data/coins";
 import { buildRealFlows } from "../utils/buildRealFlow";
 
@@ -195,18 +198,46 @@ export default function Home() {
 
   /* External Stability 데이터 생성
     1. filteredBaseInfo
-    2. dailyAgg (이미 계산됨)
+    2. dailyAgg 
     3. rolling window 적용
     */
-  const externalStabilitySeries = useMemo(() => {
-    const window = windowMap[windowSize] as 2 | 4 | 7;
+
+  const extendedBaseInfoForExternal = useMemo(() => {
+    if (!startDateStr || !endDateStr) return filteredBaseInfo;
+
+    const window = windowMap[windowSize];
+
+    const extendedRange = extendRangeForRolling(
+      { start: startDateStr, end: endDateStr },
+      window
+    );
+
+    return filterWithFallback(baseInfo, extendedRange, BASE_INFO_DEFAULT_RANGE);
+  }, [baseInfo, startDateStr, endDateStr, windowSize]);
+
+  const rawExternalStabilitySeries = useMemo(() => {
+    const window = windowMap[windowSize] as 4 | 7 | 9;
 
     return buildExternalStabilitySeries(
-      filteredBaseInfo,
+      extendedBaseInfoForExternal,
       dailyAgg,
       window
-    ).filter((s) => selectedIds.includes(s.id));
-  }, [filteredBaseInfo, dailyAgg, windowSize, selectedIds]);
+    );
+  }, [extendedBaseInfoForExternal, dailyAgg, windowSize, selectedIds]);
+
+  const externalStabilitySeries = useMemo(() => {
+    if (!startDateStr || !endDateStr) return [];
+
+    return rawExternalStabilitySeries
+      .filter((s) => selectedIds.includes(s.id)) // 🔥 코인 선택 반영
+      .map((series) => ({
+        ...series,
+        points: series.points.filter(
+          (p) => p.date >= startDateStr && p.date <= endDateStr
+        ),
+      }))
+      .filter((s) => s.points.length > 0);
+  }, [rawExternalStabilitySeries, selectedIds, startDateStr, endDateStr]);
 
   const allExternalStabilitySeries = useMemo(() => {
     const window = windowMap[windowSize] as 2 | 4 | 7;

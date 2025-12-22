@@ -4,6 +4,7 @@ import type { ExternalStabilitySeries } from "../types/externalStability";
 import { CHAIN_TO_COIN_ID } from "../utils/coinMap";
 import { COINS } from "../data/coins";
 import { mean } from "./stats";
+import dayjs from "dayjs";
 
 const EPS = 1e-12;
 
@@ -159,4 +160,14 @@ export function buildExternalStabilitySeries(
   }
 
   return result;
+}
+
+export function extendRangeForRolling(
+  range: { start: string; end: string },
+  window: number
+) {
+  return {
+    start: dayjs(range.start).subtract(window, "day").format("YYYY-MM-DD"),
+    end: range.end,
+  };
 }
