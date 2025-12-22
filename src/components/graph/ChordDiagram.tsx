@@ -158,23 +158,36 @@ export default function ChordDiagramD3({ flows, flow }: ChordDiagramProps) {
     /* =======================
        RIBBONS (필터링 적용)
     ======================= */
+    /* =======================
+   RIBBONS (필터링 적용)
+======================= */
     svg
       .append("g")
       .selectAll("path")
       .data(
         chord.filter((d) => shouldShowRibbon(d.source.index, d.target.index))
-      ) // 필터링으로 리본만 제거
+      )
       .enter()
       .append("path")
       .attr("d", ribbonGen as any)
       .attr("fill", (d) => {
         const sourceId = keys[d.source.index];
         const targetId = keys[d.target.index];
-        // Inflow 모드 시 들어오는 코인 색상 강조
-        return isSingleInflow
-          ? COINS[targetId as keyof typeof COINS].color
-          : COINS[sourceId as keyof typeof COINS].color;
+
+        // 1. Inflow(유입) 모드: 나에게 돈을 보낸 '상대방(source)'의 색상 사용
+        if (isSingleInflow) {
+          return COINS[sourceId as keyof typeof COINS].color;
+        }
+
+        // 2. Outflow(유출) 모드: 내가 돈을 보낸 '상대방(target)'의 색상 사용
+        if (isSingleOutflow) {
+          return COINS[targetId as keyof typeof COINS].color;
+        }
+
+        // 3. 전체 모드: 기본적으로 출발지(source) 색상 사용
+        return COINS[sourceId as keyof typeof COINS].color;
       })
+
       .attr("opacity", (d) =>
         ribbonOpacity(keys[d.source.index], keys[d.target.index])
       )
