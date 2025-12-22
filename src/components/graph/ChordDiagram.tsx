@@ -108,8 +108,8 @@ export default function ChordDiagramD3({ flows, flow }: ChordDiagramProps) {
     };
 
     /* =======================
-       ARCS (고정된 위치의 원호들)
-    ======================= */
+   ARCS 
+======================= */
     svg
       .append("g")
       .selectAll("path")
@@ -118,7 +118,36 @@ export default function ChordDiagramD3({ flows, flow }: ChordDiagramProps) {
       .append("path")
       .attr("d", arcGen)
       .attr("fill", (d) => COINS[keys[d.index] as keyof typeof COINS].color)
-      .attr("opacity", (d) => arcOpacity(keys[d.index]));
+      .attr("opacity", (d) => arcOpacity(keys[d.index]))
+      .on("mouseover", (_, d) => {
+        const id = keys[d.index];
+        const color = COINS[id as keyof typeof COINS].color;
+
+        // 유입 / 유출 계산
+        const inflow = d3.sum(originalMatrix.map((row) => row[d.index]));
+        const outflow = d3.sum(originalMatrix[d.index]);
+
+        tooltip.style("opacity", 1).html(`
+      <div class="font-chainname-bold mb-2" style="color: ${color}">
+        ${COINS[id as keyof typeof COINS].chain.toUpperCase()}
+      </div>
+      <div class="font-body1-light">
+        Inflow: ${inflow.toLocaleString()}
+      </div>
+      <div class="font-body1-light">
+        Outflow: ${outflow.toLocaleString()}
+      </div>
+      <div class="font-body1-light mt-1 opacity-80">
+        Total: ${(inflow + outflow).toLocaleString()}
+      </div>
+    `);
+      })
+      .on("mousemove", (event) => {
+        tooltip
+          .style("left", `${event.pageX + 12}px`)
+          .style("top", `${event.pageY + 12}px`);
+      })
+      .on("mouseout", () => tooltip.style("opacity", 0));
 
     /* =======================
        LABELS
