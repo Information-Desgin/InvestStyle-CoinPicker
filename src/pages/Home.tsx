@@ -301,7 +301,7 @@ export default function Home() {
                 subtitle="[Comparison]"
                 description="Positions tokens by their external stability and internal stability."
               >
-                <QuadrantBubbleChart />
+                <QuadrantBubbleChart summaries={analyticsSummaries} />
               </AnalyticsSection>
             </div>
           </div>

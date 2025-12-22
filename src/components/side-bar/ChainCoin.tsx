@@ -78,7 +78,7 @@ export default function ChainCoin({
 
       {/* RIGHT : 선택된 경우 Bar */}
       {isSelected && stats && (
-        <div className="flex flex-col gap-[5px] w-[60px] ml-[6px]">
+        <div className="flex flex-col gap-[5px] w-[60px] mr-[6px]">
           <Bar color="#69DDD1" width={stats.endo} />
           <Bar color="#FFEE00" width={stats.exter} />
           <Bar color="#FF00B2" width={stats.netflow} />
@@ -135,7 +135,7 @@ function Bar({ color, width }: { color: string; width: number }) {
         rounded-tl-none
         rounded-bl-none
         transition-all
-        mr-[5px]"
+        "
       style={{ backgroundColor: color, width: `${Math.min(width, 100)}%` }}
     />
   );

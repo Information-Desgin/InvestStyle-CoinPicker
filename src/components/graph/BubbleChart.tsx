@@ -2,32 +2,32 @@ import * as d3 from "d3";
 import { useEffect, useRef } from "react";
 import { COINS } from "../../data/coins";
 import { useSelectedCoins } from "../../store/useSelectedCoins";
+import type { AnalyticsSummary } from "../side-bar/SideBar";
 
-export default function BubbleChartD3() {
+type BubbleDatum = {
+  symbol: string;
+  internal: number; // 0~100
+  external: number; // 0~100
+  marketCap: number;
+};
+
+export default function BubbleChartD3({
+  summaries,
+}: {
+  summaries: Record<string, AnalyticsSummary>;
+}) {
   const ref = useRef<HTMLDivElement | null>(null);
   const { selectedIds } = useSelectedCoins();
 
-  const data = [
-    { symbol: "atom", internal: 92, external: 78, marketCap: 8200 },
-    { symbol: "osmo", internal: 35, external: 90, marketCap: 2600 },
-    { symbol: "inj", internal: 88, external: 32, marketCap: 9000 },
-    { symbol: "tia", internal: 67, external: 55, marketCap: 4500 },
-    { symbol: "sei", internal: 40, external: 95, marketCap: 1800 },
-    { symbol: "axl", internal: 58, external: 72, marketCap: 3100 },
-    { symbol: "kava", internal: 20, external: 50, marketCap: 900 },
-    { symbol: "akt", internal: 76, external: 15, marketCap: 5000 },
-    { symbol: "saga", internal: 33, external: 22, marketCap: 700 },
-    { symbol: "ntrn", internal: 55, external: 60, marketCap: 1700 },
-    { symbol: "strd", internal: 12, external: 35, marketCap: 400 },
-    { symbol: "luna", internal: 48, external: 18, marketCap: 1500 },
-    { symbol: "coreum", internal: 29, external: 82, marketCap: 1200 },
-    { symbol: "althea", internal: 18, external: 58, marketCap: 600 },
-    { symbol: "om", internal: 90, external: 28, marketCap: 7200 },
-    { symbol: "atone", internal: 63, external: 48, marketCap: 2600 },
-  ];
+  const data: BubbleDatum[] = Object.entries(summaries).map(([coinId, s]) => ({
+    symbol: coinId,
+    internal: s.internalAvg * 100,
+    external: s.externalAvg * 100,
+    marketCap: s.marketCapAvg,
+  }));
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!ref.current || data.length === 0) return;
     d3.select(ref.current).selectAll("*").remove();
 
     const width = 700;
@@ -46,7 +46,7 @@ export default function BubbleChartD3() {
     /* ------------------ Scale ------------------ */
     const x = d3
       .scaleLinear()
-      .domain([0, 100])
+      .domain([50, 100])
       .range([xMargin, width - xMargin]);
 
     const y = d3
@@ -54,7 +54,17 @@ export default function BubbleChartD3() {
       .domain([0, 100])
       .range([height - yMargin, yMargin]);
 
-    const radius = d3.scaleSqrt().domain([400, 9000]).range([10, 70]);
+    // 중심 기준 증폭
+    const amplify = (v: number, factor = 1.8) =>
+      Math.max(0, Math.min(100, 50 + (v - 50) * factor));
+
+    const radius = d3
+      .scaleLog()
+      .domain([
+        Math.max(1, d3.min(data, (d) => d.marketCap)!),
+        d3.max(data, (d) => d.marketCap)!,
+      ])
+      .range([12, 60]);
 
     /* ------------------ Axis ------------------ */
     const xAxis = root
@@ -68,7 +78,6 @@ export default function BubbleChartD3() {
       .call(d3.axisLeft(y).ticks(5));
 
     [xAxis, yAxis].forEach((axis) => {
-      axis.select(".domain").attr("stroke", "#9ca3af");
       axis
         .selectAll(".tick line")
         .attr("stroke", "#b3b3b3")
@@ -116,8 +125,8 @@ export default function BubbleChartD3() {
     /* ------------------ Quadrant Lines ------------------ */
     root
       .append("line")
-      .attr("x1", x(50))
-      .attr("x2", x(50))
+      .attr("x1", x(75))
+      .attr("x2", x(75))
       .attr("y1", yMargin)
       .attr("y2", height - yMargin)
       .attr("stroke", "#6b7280")
@@ -160,8 +169,8 @@ export default function BubbleChartD3() {
       .data(data)
       .enter()
       .append("circle")
-      .attr("cx", (d) => x(d.external))
-      .attr("cy", (d) => y(d.internal))
+      .attr("cx", (d) => x(amplify(d.internal)))
+      .attr("cy", (d) => y(amplify(d.external)))
       .attr("r", (d) => radius(d.marketCap))
       .attr("fill", (d) => COINS[d.symbol].color)
       .attr("opacity", (d) => getOpacity(d.symbol))
@@ -170,8 +179,8 @@ export default function BubbleChartD3() {
           <div>
             <div class="font-chainname-bold mb-2">${d.symbol.toUpperCase()}</div>
             <div class="space-y-1 font-body1-light">
-              <div>Internal: ${d.internal}</div>
-              <div>External: ${d.external}</div>
+              <div>Internal: ${d.internal.toFixed(1)}</div>
+              <div>External: ${d.external.toFixed(1)}</div>
               <div>MarketCap: ${d.marketCap.toLocaleString()}</div>
             </div>
           </div>
@@ -190,8 +199,8 @@ export default function BubbleChartD3() {
       .data(data)
       .enter()
       .append("text")
-      .attr("x", (d) => x(d.external))
-      .attr("y", (d) => y(d.internal))
+      .attr("x", (d) => x(amplify(d.internal)))
+      .attr("y", (d) => y(amplify(d.external)))
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .attr("fill", "#ffffff")
@@ -199,7 +208,7 @@ export default function BubbleChartD3() {
       .attr("font-family", "var(--font-sub)")
       .attr("opacity", (d) => getOpacity(d.symbol))
       .text((d) => d.symbol.toUpperCase());
-  }, [selectedIds]);
+  }, [selectedIds, data]);
 
   return <div ref={ref} />;
 }
