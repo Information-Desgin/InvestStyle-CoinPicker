@@ -152,7 +152,7 @@ export function buildExternalStabilitySeries(
     if (coinId && points.length > 0) {
       result.push({
         id: coinId,
-        color: COINS[coinId]?.color ?? "#888",
+        color: COINS[coinId as keyof typeof COINS]?.color ?? "#888",
         points,
       });
     }

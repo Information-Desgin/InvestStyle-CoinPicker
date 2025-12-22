@@ -81,7 +81,7 @@ export default function ChordDiagramD3({ flows, flow }: ChordDiagramProps) {
       .innerRadius(innerRadius)
       .outerRadius(outerRadius);
 
-    const ribbonGen = d3.ribbon<any>().radius(ribbonRadius);
+    const ribbonGen = d3.ribbon().radius(ribbonRadius);
 
     /* =======================
        Opacity Rules
@@ -120,13 +120,13 @@ export default function ChordDiagramD3({ flows, flow }: ChordDiagramProps) {
       .enter()
       .append("path")
       .attr("d", arcGen)
-      .attr("fill", (d) => COINS[keys[d.index]].color)
+      .attr("fill", (d) => COINS[keys[d.index] as keyof typeof COINS].color)
       .attr("opacity", (d) => arcOpacity(keys[d.index]))
       .on("mouseover", (_, d) => {
         const key = keys[d.index];
         tooltip.style("opacity", 1).html(`
           <div class="font-chainname-bold mb-2">
-            ${COINS[key].chain}
+            ${COINS[key as keyof typeof COINS].chain}
           </div>
           <div class="font-body1-light">
             Total Flow: ${d.value.toLocaleString()}
@@ -173,7 +173,9 @@ export default function ChordDiagramD3({ flows, flow }: ChordDiagramProps) {
       .attr("href", (_, i) => `#label-path-${i}`)
       .attr("startOffset", "25%")
       .attr("text-anchor", "middle")
-      .text((d) => COINS[keys[d.index]].chain.toUpperCase());
+      .text((d) =>
+        COINS[keys[d.index] as keyof typeof COINS].chain.toUpperCase()
+      );
 
     /* =======================
        RIBBONS
@@ -185,8 +187,11 @@ export default function ChordDiagramD3({ flows, flow }: ChordDiagramProps) {
       .data(chord)
       .enter()
       .append("path")
-      .attr("d", ribbonGen)
-      .attr("fill", (d) => COINS[keys[d.target.index]].color)
+      .attr("d", ribbonGen as unknown as string)
+      .attr(
+        "fill",
+        (d) => COINS[keys[d.target.index] as keyof typeof COINS].color
+      )
       .attr("opacity", (d) =>
         ribbonOpacity(keys[d.source.index], keys[d.target.index])
       )
@@ -195,7 +200,9 @@ export default function ChordDiagramD3({ flows, flow }: ChordDiagramProps) {
         const t = keys[d.target.index];
         tooltip.style("opacity", 1).html(`
           <div class="font-chainname-bold mb-2">
-            ${COINS[s].chain} → ${COINS[t].chain}
+            ${COINS[s as keyof typeof COINS].chain} → ${
+          COINS[t as keyof typeof COINS].chain
+        }
           </div>
           <div class="font-body1-light">
             Volume: ${d.source.value.toLocaleString()}

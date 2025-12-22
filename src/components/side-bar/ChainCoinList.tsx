@@ -55,7 +55,7 @@ export default function ChainCoinList({
               external: m.externalAvg,
               netflow: m.netflowAvg,
             }
-          : null,
+          : undefined,
         stats: m
           ? {
               endo: m.internalAvg * 100,
@@ -89,7 +89,7 @@ export default function ChainCoinList({
           key={item.id}
           name={item.chain}
           coin={item.coin}
-          color={COINS[item.id]?.color || "var(--point)"}
+          color={COINS[item.id as keyof typeof COINS]?.color || "var(--point)"}
           coinImg={item.coinImg}
           isSelected={selectedIds.includes(item.id)}
           onClick={() => toggle(item.id)}

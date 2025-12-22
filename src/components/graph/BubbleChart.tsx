@@ -172,7 +172,7 @@ export default function BubbleChartD3({
       .attr("cx", (d) => x(amplify(d.internal)))
       .attr("cy", (d) => y(amplify(d.external)))
       .attr("r", (d) => radius(d.marketCap))
-      .attr("fill", (d) => COINS[d.symbol].color)
+      .attr("fill", (d) => COINS[d.symbol as keyof typeof COINS].color)
       .attr("opacity", (d) => getOpacity(d.symbol))
       .on("mouseover", (_, d) => {
         tooltip.style("opacity", 1).html(`

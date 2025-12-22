@@ -38,6 +38,7 @@ const windowMap = {
 };
 
 interface AnalyticsSummary {
+  coinId: string;
   internalAvg: number;
   externalAvg: number;
   netflowAvg: number;
@@ -252,6 +253,7 @@ export default function Home() {
           : 0;
 
       summaries[coinId] = {
+        coinId,
         internalAvg,
         externalAvg,
         netflowAvg,

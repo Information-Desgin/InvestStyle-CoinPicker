@@ -64,7 +64,8 @@ export default function InternalStability({ data }: InternalStabilityProps) {
         valueScale={{ type: "linear" }}
         indexScale={{ type: "band", round: true }}
         colors={({ id, indexValue }) => {
-          const baseColor = COINS[indexValue as string]?.color ?? "#60a5fa";
+          const baseColor =
+            COINS[indexValue as keyof typeof COINS]?.color ?? "#60a5fa";
           const lightness =
             METRIC_LIGHTNESS[id as keyof typeof METRIC_LIGHTNESS] ?? 50;
 
@@ -82,7 +83,8 @@ export default function InternalStability({ data }: InternalStabilityProps) {
         enableGridY
         tooltip={({ id: activeKey, indexValue }) => {
           const coin = indexValue as string;
-          const coinColor = COINS[coin]?.color ?? "#60a5fa";
+          const coinColor =
+            COINS[coin as keyof typeof COINS]?.color ?? "#60a5fa";
 
           const row = data.find((d) => d.coin === coin);
           if (!row) return null;

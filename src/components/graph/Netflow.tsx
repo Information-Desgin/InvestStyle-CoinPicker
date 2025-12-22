@@ -40,18 +40,22 @@ export default function NetFlow({ data }: NetFlowProps) {
         maxValue={1}
         padding={0.5}
         colors={({ group }) => {
-          const baseColor = COINS[group]?.color ?? "#60a5fa";
+          const baseColor =
+            COINS[group as keyof typeof COINS]?.color ?? "#60a5fa";
           return `${baseColor}66`; // HEX 코드 뒤에 투명도 추가
         }}
-        boxOpacity={0.8}
         borderWidth={3}
         medianWidth={3}
         whiskerWidth={3}
-        borderColor={({ group }) => COINS[group]?.color ?? "#60a5fa"}
-        medianColor={({ group }) => COINS[group]?.color ?? "#60a5fa"}
-        whiskerColor={({ group }) => COINS[group]?.color ?? "#60a5fa"}
-        enableOutliers={false}
-        enableWhiskerDots={true}
+        borderColor={({ group }) =>
+          COINS[group as keyof typeof COINS]?.color ?? "#60a5fa"
+        }
+        medianColor={({ group }) =>
+          COINS[group as keyof typeof COINS]?.color ?? "#60a5fa"
+        }
+        whiskerColor={({ group }) =>
+          COINS[group as keyof typeof COINS]?.color ?? "#60a5fa"
+        }
         whiskerEndSize={0.2}
         axisBottom={{
           legend: "Coin",
@@ -63,13 +67,15 @@ export default function NetFlow({ data }: NetFlowProps) {
           legend: "Netflow",
           legendOffset: -40,
         }}
-        tooltip={(tooltipProps) => {
-          const { group, color, data } = tooltipProps;
+        tooltip={(tooltipProps: any) => {
+          const { group, data } = tooltipProps;
 
           if (!data?.values) return null;
 
           const [min, q1, median, q3, max] = data.values;
-          const safeColor = COINS[group]?.color ?? "#60a5fa";
+
+          const safeColor =
+            COINS[group as keyof typeof COINS]?.color ?? "#60a5fa";
 
           return (
             <TooltipContainer title={group.toUpperCase()}>
@@ -101,25 +107,25 @@ export default function NetFlow({ data }: NetFlowProps) {
             </TooltipContainer>
           );
         }}
-        theme={{
-          background: "transparent",
-          axis: {
-            legend: {
-              text: {
-                fill: "#9ca3af",
+        theme={
+          {
+            background: "transparent",
+            axis: {
+              legend: {
+                text: { fill: "#9ca3af" },
+              },
+              ticks: {
+                text: { fill: "#9ca3af", fontSize: 11 },
               },
             },
-            ticks: {
-              text: { fill: "#9ca3af", fontSize: 11 },
+            grid: {
+              line: {
+                stroke: "#1f2937",
+                strokeDasharray: "4 4",
+              },
             },
-          },
-          grid: {
-            line: {
-              stroke: "#1f2937",
-              strokeDasharray: "4 4",
-            },
-          },
-        }}
+          } as any
+        }
       />
     </div>
   );

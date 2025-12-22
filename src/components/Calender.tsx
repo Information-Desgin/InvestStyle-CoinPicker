@@ -1,25 +1,29 @@
 import ReactCalendar from "react-calendar";
+
 import dayjs from "dayjs";
 import "react-calendar/dist/Calendar.css";
 import { useDateRange } from "../store/useDateRange";
+import type { Value } from "react-calendar/dist/shared/types.js";
 
 export default function Calendar() {
   const { startDate, endDate, setDateRange } = useDateRange();
 
-  const handleDateChange = (date: Date | [Date, Date]) => {
-    if (Array.isArray(date)) {
-      const [start, end] = date;
-      setDateRange(start ?? null, end ?? null);
-    }
+  const handleDateChange = (value: Value) => {
+    if (!Array.isArray(value)) return;
+
+    const [start, end] = value;
+
+    setDateRange(start ?? null, end ?? null);
   };
 
-  const value = startDate && endDate ? [startDate, endDate] : null;
+  const calendarValue: Value =
+    startDate && endDate ? [startDate, endDate] : null;
 
   return (
     <ReactCalendar
-      onChange={handleDateChange}
-      value={value}
       selectRange
+      onChange={handleDateChange}
+      value={calendarValue}
       formatDay={(_, date) => dayjs(date).format("DD")}
       formatShortWeekday={(_, date) => dayjs(date).format("dd").toUpperCase()}
       formatMonthYear={(_, date) => dayjs(date).format("MMMM YYYY")}

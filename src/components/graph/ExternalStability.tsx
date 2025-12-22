@@ -80,7 +80,8 @@ export default function ExternalStability({ data }: ExternalStabilityProps) {
         onMouseLeave={() => setHoverX(null)}
         sliceTooltip={({ slice }) => {
           const sortedPoints = [...slice.points].sort(
-            (a, b) => Number(b.data.actual) - Number(a.data.actual)
+            (a, b) =>
+              Number((b.data as any).actual) - Number((a.data as any).actual)
           );
 
           return (
@@ -92,7 +93,7 @@ export default function ExternalStability({ data }: ExternalStabilityProps) {
                   key={point.id}
                   dotColor={point.seriesColor}
                   label={String(point.seriesId).toUpperCase()}
-                  value={Number(point.data.actual).toFixed(1)}
+                  value={Number((point.data as any).actual).toFixed(1)}
                 />
               ))}
             </TooltipContainer>
